@@ -134,7 +134,7 @@ public class JWTService {
 		return refreshToken;
 	}
 
-	public String getRefreshTokenForERP(Long userId, String subject, boolean rememberMe) {
+	public String getRefreshToken(Long userId, String subject, boolean rememberMe) {
 		Algorithm algo = Algorithm.HMAC256(secret.getBytes());
 		long expiryTime = 2 * accessTokenExpiryTime;
 		if (rememberMe) {

@@ -90,7 +90,6 @@ public class BloggerServiceImpl implements BloggerService {
 	public ResponseModel getLoginModel(LoginModel req, boolean validatePassword) {
 
 		try {
-
 			if (req.checkValidationForLogin() || !validatePassword) {
 				String email = req.getEmail().toLowerCase().trim();
 				Optional<User> userOptional = userRepo.findByEmail(email);
@@ -127,7 +126,7 @@ public class BloggerServiceImpl implements BloggerService {
 		BloggerLoginModel loginModel = new BloggerLoginModel();
 		try {
 			String accessToken = jwtService.getAccessToken(user.getId().longValue(), null, new ArrayList<>());
-			String refreshToken = jwtService.getRefreshTokenForERP(user.getId().longValue(), null, rememberMe);
+			String refreshToken = jwtService.getRefreshToken(user.getId().longValue(), null, rememberMe);
 			loginModel.setAccessTokenValidity(accessTokenExpiryTime * 60);
 			loginModel.setRefreshTokenValidity(refreshTokenExpiryTime * 60);
 			loginModel.setAccessToken(accessToken);

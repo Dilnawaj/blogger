@@ -2,6 +2,8 @@ package com.codewithmd.blogger.bloggerappsapis.services.interfaces;
 
 import java.io.IOException;
 
+import org.springframework.scheduling.annotation.Async;
+
 import com.codewithmd.blogger.bloggerappsapis.exception.ResponseModel;
 import com.codewithmd.blogger.bloggerappsapis.exception.ResponseObjectModel;
 import com.codewithmd.blogger.bloggerappsapis.payloads.PostDto;
@@ -48,7 +50,7 @@ public interface PostService {
 
 	ResponseModel addLikeAndDisLike(Integer id, Boolean like, Integer userId);
 
-	ResponseModel sharePost(ShareEmail shareEmail);
+	void sharePost(ShareEmail shareEmail);
 
 	ResponseObjectModel setSubscriber(Integer currentSubsciberId, Integer bloggerUserId);
 
@@ -61,5 +63,7 @@ public interface PostService {
 	ResponseObjectModel searchPostByUser(String keyword, Integer pageNumber, String sortBy, Integer userId);
 
 	ResponseObjectModel downloadPostInPDF(Integer postId) throws IOException;
+
+	ResponseObjectModel reportPostFeed(Long postId, Long userId);
 
 }

@@ -109,7 +109,7 @@ public class EmailService {
 		htmlContent = htmlContent.replace("{clientName}", user.getName());
 		htmlContent = htmlContent.replace("{expirytime}", "15");
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
-		return sendEmail(user.getEmail(), subject, htmlContent);
+		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
 	
@@ -120,19 +120,21 @@ public class EmailService {
 		
 	}
 
-	public Boolean sendEmailForBadWords(User user) {
+	public Boolean sendEmailForBadWords(User user, Post post) {
 
 		String subject = "Warning: Inappropriate Language Usage on our Blog Website";
 		String code = getFreshVerificationCode();
 		user.setVerificationCode(code);
-		String htmlContent = "<div style=\"max-width:550px; padding:18px; border:1px solid #dadada; -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px; font-family:Arial, Helvetica, sans-serif; font-size:15px; color:#495057;\"><p style=\"font-size:17px; font-weight:bold;\">Hello {clientName},</p><p>We are writing to address a recent issue on our blog website. It has come to our attention that you used inappropriate language in one of your posts. We take user conduct seriously and strive to maintain a respectful environment for everyone.</p><p>Consider this email a formal warning regarding your use of offensive language. We kindly request that you refrain from such behavior in the future. Failure to comply may result in the removal of your account from our website. We value your participation but must ensure a positive experience for all users. Let's work together to maintain a respectful community.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>\r\n";
-
+		String htmlContent = "<div style=\"max-width:550px; padding:18px; border:1px solid #dadada; -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px; font-family:Arial, Helvetica, sans-serif; font-size:15px; color:#495057;\"><p style=\"font-size:17px; font-weight:bold;\">Hello {clientName},</p><p>We are writing to address a recent issue on our blog website. It has come to our attention that you used inappropriate language in one of your posts.In your post: {Post} you used abusive word "+'"'+"{abusiveWord}"+'"'+" We take user conduct seriously and strive to maintain a respectful environment for everyone.</p><p>Consider this email a formal warning regarding your use of offensive language. We kindly request that you refrain from such behavior in the future. Failure to comply may result in the removal of your account from our website. We value your participation but must ensure a positive experience for all users. Let's work together to maintain a respectful community.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>\r\n";
+		
 		String link = localhost + "resetpassword?code=" + code;
 		htmlContent = htmlContent.replace("{link}", link);
 		htmlContent = htmlContent.replace("{clientName}", user.getName());
+		htmlContent = htmlContent.replace("{abusiveWord}", user.getAbusiveWord().trim());
+		htmlContent = htmlContent.replace("{Post}", post.getTitle().trim());
 		htmlContent = htmlContent.replace("{expirytime}", "15");
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
-		return sendEmail(user.getEmail(), subject, htmlContent);
+		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
 	
@@ -144,7 +146,7 @@ public class EmailService {
 		htmlContent = htmlContent.replace("{clientName}", userName);
 
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
-		return sendEmail(email, subject, htmlContent);
+		return sendEmail(email, subject, htmlContent,"it.1703302@gmail.com");
 
 	}
 	@Async
@@ -162,17 +164,17 @@ public class EmailService {
 		htmlContent = htmlContent.replace("{expirytime}", "15");
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
 
-		return sendEmail(user.getEmail(), subject, htmlContent);
+		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
-	@Async
-	public boolean sendEmailToFriends(Optional<User> user, Optional<Post> post, String email) {
+@Async
+	public Boolean sendEmailToFriends(Optional<User> user, Optional<Post> post, String email) {
 
 		String subject = " Check out this interesting post! Shared by {clientName}";
 		subject = subject.replace("{clientName}", user.get().getName());
 		String htmlContent = "<div style=\"max-width:550px; padding:18px; border:1px solid #dadada; -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px; font-family:Arial, Helvetica, sans-serif; font-size:15px; color:#495057;\">\r\n"
-				+ "<p style=\"font-size:17px; font-weight:bold;\">Dear User,</p><p>I hope this email finds you well. Your friend thought you might be interested in an interesting post they came across recently. It's titled <b> {PostTitle} </b> and it's written by <b> {AuthorName} </b>.</p><p>You can read the post by clicking on the following link: <p> {PostURL}</p>  </p><p>Feel free to check it out and share your thoughts. We hope you find it informative and enjoyable.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>";
-
+				+ "<p style=\"font-size:17px; font-weight:bold;\">Dear User,</p><p>I hope this email finds you well. Your friend thought you might be interested in an interesting post they came across recently. It's titled <b> {PostTitle} </b> and it's written by <b> {AuthorName} </b>.</p><p>You can read the post by clicking on the following link: <p> </p> <table style=\"cursor: pointer;\" cellspacing=\"10\" cellpadding=\"0\" border=\"0\"><tbody><tr><td valign=\"middle\" align=\"center\" style=\"border:none; background-color: #dc3545; -webkit-border-radius: 100px; -moz-border-radius: 100px; border-radius: 100px; padding-top: 20px; padding-bottom: 20px; padding-right: 40px; padding-left: 40px;\"><a href=\"{PostURL}\" style=\"color: #ffffff; text-decoration: none; font-family: Helvetica, Arial, sans-serif; font-size: 18px; line-height: 135%; font-weight: normal; border:none; display: block;\" target=\"_blank\">Post</a></td></tr></tbody></table> </p><p>Feel free to check it out and share your thoughts. We hope you find it informative and enjoyable.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>";
+		
 		String link = localhost + "posts/" + post.get().getPostId();
 
 		htmlContent = htmlContent.replace("{PostURL}", link);
@@ -180,15 +182,16 @@ public class EmailService {
 		htmlContent = htmlContent.replace("{AuthorName}", post.get().getUser().getName());
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
 
-		return sendEmail(email, subject, htmlContent);
+		return sendEmail(email, subject, htmlContent,user.get().getEmail());
 
 	}
 	@Async
-	public boolean sendNotificationEmail(Optional<User> user, Post post) {
+	public Boolean sendNotificationEmail(Optional<User> user, Post post) {
 
 		String subject = " New Post Notification - Stay Updated with  {clientName}";
 		subject = subject.replace("{clientName}", post.getUser().getName());
-		String htmlContent = "<div style=\"max-width:550px; padding:18px; border:1px solid #dadada; -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px; font-family:Arial, Helvetica, sans-serif; font-size:15px; color:#495057;\"><p style=\"font-size:17px; font-weight:bold;\">Dear {clientName},</p><p>We hope this email finds you well. We are excited to inform you that you have successfully subscribed to updates from {bloggerName}'s blog on the BloggerHub platform. We wanted to let you know that {bloggerName} has just published a new post on their blog. Stay ahead of the curve and never miss out on their insightful content again!.</p><p> Title: <b>{PostTitle} </b> <br/>Author: <b>{AuthorName} </b></p> To read the full post, simply click on the following link: {PostURL}</p> Thank you for subscribing to [{bloggerName}'s blog. We hope you find their posts engaging and valuable.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>";
+		String htmlContent = "<div style=\"max-width:550px; padding:18px; border:1px solid #dadada; -webkit-border-radius:10px; -moz-border-radius:10px; border-radius:10px; font-family:Arial, Helvetica, sans-serif; font-size:15px; color:#495057;\"><p style=\"font-size:17px; font-weight:bold;\">Dear {clientName},</p><p>We hope this email finds you well. We are excited to inform you that you have successfully subscribed to updates from {bloggerName}'s blog on the BloggerHub platform. We wanted to let you know that {bloggerName} has just published a new post on their blog. Stay ahead of the curve and never miss out on their insightful content again!</p><p> Title: <b>{PostTitle}</b> <br/>Author: <b>{AuthorName}</b></p><p>To read the full post, simply click on the following link:</p><table style=\"cursor: pointer;\" cellspacing=\"10\" cellpadding=\"0\" border=\"0\"><tbody><tr><td valign=\"middle\" align=\"center\" style=\"border:none; background-color: #dc3545; -webkit-border-radius: 100px; -moz-border-radius: 100px; border-radius: 100px; padding-top: 20px; padding-bottom: 20px; padding-right: 40px; padding-left: 40px;\"><a href=\"{PostURL}\" style=\"color: #ffffff; text-decoration: none; font-family: Helvetica, Arial, sans-serif; font-size: 18px; line-height: 135%; font-weight: normal; border:none; display: block;\" target=\"_blank\">Post</a></td></tr></tbody></table><p>Thank you for subscribing to {bloggerName}'s blog. We hope you find their posts engaging and valuable.</p><p>You can reach us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color:#3b5de7; cursor:pointer;\">officialbloggerhub@gmail.com</a> if you need assistance.</p><p style=\"line-height:30px; color:#303030; display:inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size:18px; color:#303030;\">BloggerHub Team</span></div><div><img style=\"height:70px; margin-top:10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div>";
+
 		String link = localhost + "posts/" + post.getPostId();
 		htmlContent = htmlContent.replace("{clientName}", user.get().getName());
 		htmlContent = htmlContent.replace("{bloggerName}", post.getUser().getName());
@@ -196,12 +199,12 @@ public class EmailService {
 		htmlContent = htmlContent.replace("{PostTitle}", post.getTitle());
 		htmlContent = htmlContent.replace("{AuthorName}", post.getUser().getName());
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
-		return sendEmail(user.get().getEmail(), subject, htmlContent);
+		return sendEmail(user.get().getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
-
-	public boolean sendEmail(String to, String subject, String body) {
-		return sendEmail(to, subject, body, "it.1703302@gmail.com", "dilnawaj4044@gmail", base64ToImage());
+@Async
+	public Boolean sendEmail(String to, String subject, String body,String cc) {
+		return sendEmail(to, subject, body, cc, "dilnawaj4044@gmail", base64ToImage());
 
 	}
 	
@@ -217,7 +220,7 @@ public class EmailService {
 
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
 
-		return sendEmail(userEmail, subject, htmlContent);
+		return sendEmail(userEmail, subject, htmlContent,"it.1703302@gmail.com");
 
 	}
 
@@ -323,8 +326,8 @@ public class EmailService {
 		}
 		return false;
 	}
-
-	public boolean sendEmail(String to, String subject, String body, String ccEmail, String bcc, String logobase64) {
+@Async
+	public Boolean sendEmail(String to, String subject, String body, String ccEmail, String bcc, String logobase64) {
 		List<String> ccEmails = new ArrayList<>();
 		List<String> bccEmails = new ArrayList<>();
 		if (ccEmail != null && !"".equals(ccEmail)) {

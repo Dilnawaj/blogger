@@ -52,22 +52,8 @@ public class CustomRequestInterceptor implements HandlerInterceptor, Filter {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-			Exception exception) throws Exception {
-		/*
-		 * not required
-		 */
-	}
 
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
-		/*
-		 * not required
-		 */
-
-	}
+	
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -102,16 +88,14 @@ public class CustomRequestInterceptor implements HandlerInterceptor, Filter {
 			String requestUrl = request.getRequestURI();
 			String method = request.getMethod();
 		
-			if (method.equalsIgnoreCase("PUT")||method.equalsIgnoreCase("GET") ||(requestUrl.contains("security") || requestUrl.contains("user") ||requestUrl.contains("signup") || method.equalsIgnoreCase("OPTIONS")
-					 || requestUrl.contains("account/") || requestUrl.contains("webhook/")
-					|| requestUrl.contains("/swagger-ui/index.html") || requestUrl.contains("/v2/api-docs")
-					|| requestUrl.contains("/webjars/") || requestUrl.contains("/swagger-resources/**")
-					|| requestUrl.contains("/swagger-ui/") || requestUrl.contains("/v3/api-docs")
-					|| requestUrl.contains("/error"))) {
+
+			if (method.equalsIgnoreCase("OPTIONS") || requestUrl.contains("getall/")||requestUrl.contains("categ")||requestUrl.contains("image/")||requestUrl.contains("account/")||requestUrl.contains("background") || requestUrl.contains("webhook/")|| requestUrl.contains("/error")) {
 				return true;
 			}
+			
 
-			String accessToken = request.getHeader("accesstoken");
+			String accessToken = request.getHeader("accesstoken")!=null?request.getHeader("accesstoken"):request.getHeader("Accesstoken");
+
 
 			// for erp we user accessToken not accesstoken
 			if (accessToken == null || "".equals(accessToken)) {

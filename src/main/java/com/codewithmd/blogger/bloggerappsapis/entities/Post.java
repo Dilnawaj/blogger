@@ -49,6 +49,11 @@ public class Post {
 	private Integer numberOfViews=0;
 	
 	private Integer recommendedPost = 0;
+	
+	private boolean suspendPost= false;
+	
+	
+
 
 	public Integer getPostId() {
 		return postId;
@@ -180,6 +185,18 @@ public class Post {
 
 	public void setRecommendedPost(Integer recommendedPost) {
 		this.recommendedPost = recommendedPost;
+	}
+
+
+
+	
+
+	public boolean isSuspendPost() {
+		return suspendPost;
+	}
+
+	public void setSuspendPost(boolean suspendPost) {
+		this.suspendPost = suspendPost;
 	}
 
 	@Override

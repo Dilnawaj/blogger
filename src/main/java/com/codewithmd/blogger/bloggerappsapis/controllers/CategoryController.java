@@ -19,7 +19,7 @@ import com.codewithmd.blogger.bloggerappsapis.payloads.CategoryDto;
 import com.codewithmd.blogger.bloggerappsapis.services.interfaces.CategoryService;
 
 @RestController
-@RequestMapping("/catagorie")
+@RequestMapping("/categorie")
 @Validated
 public class CategoryController {
 	@Autowired

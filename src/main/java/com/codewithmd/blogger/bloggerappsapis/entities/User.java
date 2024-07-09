@@ -46,6 +46,8 @@ public class User {
 	private Boolean welcomeEmail;
 
 	private Integer abusiveContentNo = 0;
+	
+	private String abusiveWord;
 
 	private boolean isPasswordSet;
 
@@ -230,6 +232,16 @@ public class User {
 
 	public void setGoogleLoginCount(Integer googleLoginCount) {
 		this.googleLoginCount = googleLoginCount;
+	}
+	
+	
+
+	public String getAbusiveWord() {
+		return abusiveWord;
+	}
+
+	public void setAbusiveWord(String abusiveWord) {
+		this.abusiveWord = abusiveWord;
 	}
 
 	@Override

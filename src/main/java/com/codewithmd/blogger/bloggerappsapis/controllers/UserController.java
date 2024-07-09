@@ -2,6 +2,7 @@ package com.codewithmd.blogger.bloggerappsapis.controllers;
 
 import java.io.IOException;
 
+
 import java.security.GeneralSecurityException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,13 @@ public class UserController {
 
 	// POST-> create User
 
-	@PostMapping(value = "/signup", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/account/signup", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> createUser(@RequestBody UserDto userDto) {
 		ResponseModel createUser = this.userService.createUser(userDto);
 		return new ResponseEntity<>(createUser.getResponse(), createUser.getResponseCode());
 	}
 
-	@GetMapping(value = "/googlesignupprocess/{code}", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/account/googlesignupprocess/{code}", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> googlesignup(@PathVariable String code) throws GeneralSecurityException, IOException {
 
 		ResponseModel response = this.userService.googleSignUp(code);
@@ -62,6 +63,10 @@ public class UserController {
 	@PutMapping(produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto) {
 		ResponseModel updateUser = this.userService.updateUser(userDto);
+		Integer a=10;
+		a.longValue();
+		a.toString();
+	
 		return new ResponseEntity<>(updateUser.getResponse(), updateUser.getResponseCode());
 	}
 
@@ -74,7 +79,7 @@ public class UserController {
 	}
 
 	// GET -> user Get
-	@GetMapping("/{id}")
+	@GetMapping("/account/{id}")
 	public ResponseEntity<Object> getOne(@PathVariable Integer id) {
 		ResponseObjectModel getOneUserDto = this.userService.getUserById(id);
 		return new ResponseEntity<>(getOneUserDto.getResponse(), getOneUserDto.getResponseCode());

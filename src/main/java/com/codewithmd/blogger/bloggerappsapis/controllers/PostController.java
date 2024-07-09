@@ -32,6 +32,7 @@ import com.codewithmd.blogger.bloggerappsapis.payloads.PostDto;
 import com.codewithmd.blogger.bloggerappsapis.payloads.PostEnum;
 import com.codewithmd.blogger.bloggerappsapis.payloads.ShareEmail;
 import com.codewithmd.blogger.bloggerappsapis.payloads.SortDirEnum;
+import com.codewithmd.blogger.bloggerappsapis.services.impl.PostServiceImpl;
 import com.codewithmd.blogger.bloggerappsapis.services.interfaces.FileService;
 import com.codewithmd.blogger.bloggerappsapis.services.interfaces.PostService;
 
@@ -42,6 +43,7 @@ public class PostController {
 
 	@Autowired
 	private PostService postService;
+
 	@Autowired
 	private FileService fileService;
 
@@ -69,8 +71,8 @@ public class PostController {
 	@CrossOrigin
 	@PostMapping(value = "/share", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> sharePost(@RequestBody ShareEmail shareEmail) {
-		ResponseModel sharePost = this.postService.sharePost(shareEmail);
-		return new ResponseEntity<>(sharePost.getResponse(), sharePost.getResponseCode());
+		 this.postService.sharePost(shareEmail);
+		return new ResponseEntity<>("Post Successfully Share with your Friends",HttpStatus.OK);
 	}
 
 	@CrossOrigin
@@ -140,7 +142,7 @@ public class PostController {
 	}
 
 	@CrossOrigin
-	@GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/account/{id}", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> getPostById(@PathVariable Integer id) {
 		ResponseObjectModel postById = this.postService.getPostById(id);
 		return new ResponseEntity<>(postById.getResponse(), postById.getResponseCode());
@@ -160,7 +162,7 @@ public class PostController {
 	}
 
 	@CrossOrigin
-	@GetMapping(value = "/search", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/account/search", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> searchPosts(@RequestParam(value = "keyword") String keyword,
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
 			@RequestParam(value = "sortBy", required = false) String sortBy,
@@ -200,9 +202,9 @@ public class PostController {
 	}
 
 	@CrossOrigin
-	@PostMapping(value = "/image/upload/{postId}/{imageName}", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/image/upload/{postId}", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable Integer postId,
-			@PathVariable(value = "imageName", required = false) String imageName) {
+			@RequestParam ( required = false) String imageName) {
 		String fileName = null;
 		try {
 			ResponseObjectModel responseObjectModel = this.postService.getPostById(postId);
@@ -259,6 +261,13 @@ public class PostController {
 	public ResponseEntity<Object> downloadPost(@PathVariable Integer postId) throws IOException {
 		ResponseObjectModel getSubscriber = this.postService.downloadPostInPDF( postId);
 		return new ResponseEntity<>(getSubscriber.getResponse(), getSubscriber.getResponseCode());
+	}
+	
+	@PostMapping("/report")
+	public ResponseEntity<String> reportPost(@RequestParam Long postId,@RequestParam Long userId)
+	{
+		ResponseObjectModel response = this.postService.reportPostFeed(postId, userId);
+		return new ResponseEntity<>(response.getResponse().toString(), response.getResponseCode());
 	}
 
 //	@CrossOrigin

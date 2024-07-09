@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.codewithmd.blogger.bloggerappsapis.exception.ResponseModel;
@@ -27,8 +28,9 @@ public class CommentController {
 	@CrossOrigin
 	@PostMapping(value = "/post/{postId}/user/{userId}/comment", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> createComment(@Valid @RequestBody CommentDto commentDto, @PathVariable Integer postId,
-			@PathVariable Integer userId) {
-		ResponseModel createComment = this.commentService.createComment(commentDto, postId, userId);
+			@PathVariable Integer userId,@RequestHeader(value = "userId")Integer authorUserId) {
+		System.out.println(authorUserId);
+		ResponseModel createComment = this.commentService.createComment(commentDto, postId, userId,authorUserId);
 		return new ResponseEntity<>(createComment.getResponse(), createComment.getResponseCode());
 	}
 

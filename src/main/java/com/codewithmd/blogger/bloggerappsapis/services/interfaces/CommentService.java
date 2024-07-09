@@ -7,7 +7,7 @@ import com.codewithmd.blogger.bloggerappsapis.payloads.CommentDto;
 
 public interface CommentService {
 
-	ResponseModel createComment(CommentDto commentDto, Integer postId, Integer userId);
+	ResponseModel createComment(CommentDto commentDto, Integer postId, Integer userId,Integer authorUserId);
 
 	ResponseModel deleteComment(Integer commentId);
 

@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import com.codewithmd.blogger.bloggerappsapis.config.ApiConstants;
@@ -34,6 +38,7 @@ import com.codewithmd.blogger.bloggerappsapis.entities.Category;
 import com.codewithmd.blogger.bloggerappsapis.entities.Comment;
 import com.codewithmd.blogger.bloggerappsapis.entities.LikeOrDislikePost;
 import com.codewithmd.blogger.bloggerappsapis.entities.Post;
+import com.codewithmd.blogger.bloggerappsapis.entities.ReportPost;
 import com.codewithmd.blogger.bloggerappsapis.entities.SavePost;
 import com.codewithmd.blogger.bloggerappsapis.entities.Subscribe;
 import com.codewithmd.blogger.bloggerappsapis.entities.User;
@@ -48,6 +53,7 @@ import com.codewithmd.blogger.bloggerappsapis.repos.CategoryRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.CommentRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.LikeOrDislikePostRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.PostRepo;
+import com.codewithmd.blogger.bloggerappsapis.repos.ReportPostRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.SavePostRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.SubscribeRepo;
 import com.codewithmd.blogger.bloggerappsapis.repos.UserRepo;
@@ -90,9 +96,6 @@ public class PostServiceImpl implements PostService {
 	private EmailService emailService;
 
 	@Autowired
-	private CommentRepo commentRepo;
-
-	@Autowired
 	private LikeOrDislikePostRepo likeOrDislikePostRepo;
 
 	@Autowired
@@ -100,6 +103,9 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private ReportPostRepo reportPostRepo;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -161,7 +167,8 @@ public class PostServiceImpl implements PostService {
 		try {
 			Optional<Post> post = this.postRepo.findById(postId);
 			if (!post.isEmpty()) {
-				deletePost(post.get());
+				
+				this.postRepo.deleteById(post.get().getPostId());
 				return new ResponseModel(ErrorConfig.deleteMessage("Post", postId.toString()), HttpStatus.OK);
 			} else {
 				return new ResponseModel(ErrorConfig.notFoundException("Post", postId.toString()),
@@ -173,10 +180,14 @@ public class PostServiceImpl implements PostService {
 		}
 	}
 
-	public void deletePost(Post post) {
-		List<Comment> comments = this.commentRepo.findByPost(post);
-		commentRepo.deleteAll(comments);
-		this.postRepo.delete(post);
+	public void deletePost(List<Integer> postIds) {
+
+		this.postRepo.updatePostBysuspendPost(postIds);
+
+	}
+	public void warningPost(Integer postId) {
+
+		this.postRepo.updatePostByWarningUser(postId);
 
 	}
 
@@ -186,7 +197,7 @@ public class PostServiceImpl implements PostService {
 			Post post = postRepo.getById(postId);
 			postDto = this.modelMapper.map(post, PostDto.class);
 			postDto.getUser().setPassword("");
-			postDto.setNumberOfViews(postDto.getNumberOfViews() + 1);
+			postDto.setNumberOfViews((postDto.getNumberOfViews() + 1));
 			postDto.getUser().setTotalSubscriber(subscribeRepo.findByBloggerUserId((post.getUser().getId())).size());
 			emailService.increaseNoOfViews(post);
 			return new ResponseObjectModel(postDto, HttpStatus.OK);
@@ -724,16 +735,14 @@ public class PostServiceImpl implements PostService {
 
 		return new ResponseModel(json.toJSONString(), HttpStatus.OK);
 	}
-
-	public ResponseModel sharePost(ShareEmail shareEmail) {
+	
+	public void sharePost(ShareEmail shareEmail) {
 		Optional<User> user = userRepo.findById(shareEmail.getUserId());
 		Optional<Post> post = postRepo.findById(shareEmail.getPostId());
 		for (String email : shareEmail.getEmails()) {
-			if (!emailService.sendEmailToFriends(user, post, email)) {
-				return new ResponseModel("Error in sending email to your friend", HttpStatus.OK);
-			}
+			emailService.sendEmailToFriends(user, post, email);
 		}
-		return new ResponseModel("Post Successfully Share with your Friends", HttpStatus.OK);
+		
 	}
 
 	public ResponseObjectModel setSubscriber(Integer currentSubsciberId, Integer bloggerUserId) {
@@ -925,5 +934,14 @@ public class PostServiceImpl implements PostService {
 		plainText = plainText.replaceAll("&nbsp;", " "); // For example, replace &nbsp; with space
 
 		return plainText;
+	}
+
+	@Override
+	public ResponseObjectModel reportPostFeed(Long postId, Long userId) {
+ReportPost reportPost= new ReportPost();
+reportPost.setReportedPostId(postId);
+reportPost.setReportUserId(userId);
+reportPostRepo.save(reportPost);
+return new ResponseObjectModel("Success", HttpStatus.OK);
 	}
 }

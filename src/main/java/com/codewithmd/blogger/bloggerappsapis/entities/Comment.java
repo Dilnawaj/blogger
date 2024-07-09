@@ -13,6 +13,7 @@ public class Comment {
 	private int id;
 
 	private String comment;
+	
 	@ManyToOne
 	private Post post;
 
@@ -53,4 +54,7 @@ public class Comment {
 		this.user = user;
 	}
 
+	
+
+	
 }

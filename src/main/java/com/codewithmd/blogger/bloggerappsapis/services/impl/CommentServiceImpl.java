@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public ResponseModel createComment(CommentDto commentDto, Integer postId, Integer userId) {
+	public ResponseModel createComment(CommentDto commentDto, Integer postId, Integer userId,Integer authorUserId) {
 		try {
 			Optional<Post> post = postRepo.findById(postId);
 			Optional<User> user = userRepo.findById(userId);
