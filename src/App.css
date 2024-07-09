@@ -1,0 +1,115 @@
+body {
+    background:#e2e2e2 !important
+  }
+  
+.error-message {
+    color: rgb(13, 255, 0);
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  .error-message {
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; /* Adjust the height as needed */
+  }
+/* YourComponent.css */
+/* YourComponent.css */
+.text-center {
+  text-align: center;
+}
+/* YourComponent.css */
+
+
+.underline {
+  display: inline-block;
+  border-bottom: 1px solid black; /* You can change the color or style of the underline here */
+}
+
+  .loader {
+    width: 150px;
+    height: 150px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .image-wrapper {
+    position: relative;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .file-input-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .plus-button {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    background-color: #808080;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .plus-button:hover {
+    background-color: #000000;
+  }
+  
+.page-item.active .page-link {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .line {
+    height: 1px;
+    width: 240px;
+    background-color: #000; /* You can set the color as desired */
+    margin-top: 8px; /* Adjust the margin as needed for positioning */
+    margin-bottom: 20px; /* Adjust the margin as needed for positioning */
+  }
+  
+  .page-item .page-link {
+    color: rgba(0, 0, 0.5, 0.6);
+  }
+
+  .link {
+    color: blue; /* Set the color you want for your link */
+    text-decoration: underline;
+    cursor: pointer; /* Add the hand cursor to indicate it's clickable */
+  }
+  

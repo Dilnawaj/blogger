@@ -1,0 +1,22 @@
+.warning-message {
+    color: orange;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .warning-message:before {
+    content: "⚠ ";
+    font-size: 18px;
+    margin-right: 5px;
+  }
+
+  .error-message {
+    color: #ff4136;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    margin-top: 5px;
+  }
