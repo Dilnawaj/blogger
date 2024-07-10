@@ -11,7 +11,10 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -107,6 +111,9 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	private ReportPostRepo reportPostRepo;
 
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public ResponseModel createPost(PostDto postDto, Integer userId, Integer categoryId) {
@@ -122,6 +129,8 @@ public class PostServiceImpl implements PostService {
 			post.setSusbscriberEmail(false);
 			this.postRepo.save(post);
 			postDto = this.modelMapper.map(post, PostDto.class);
+			clearCache("UserPost");
+			clearCache("AllPost");
 			return new ResponseModel(postDto, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("createCategory ", e);
@@ -153,6 +162,9 @@ public class PostServiceImpl implements PostService {
 				Optional<Category> category = categoryRepo.findById(postDto.getCategory().getCategoryId());
 				post.setCategory(category.get());
 				this.postRepo.save(post);
+				clearCache("UserPost");
+				clearCache("AllPost");
+				clearCache("saved");
 				return new ResponseModel(ErrorConfig.updateMessage("Post"), HttpStatus.ACCEPTED);
 			} else {
 				return new ResponseModel(ErrorConfig.updateError("Post"), HttpStatus.BAD_REQUEST);
@@ -167,7 +179,9 @@ public class PostServiceImpl implements PostService {
 		try {
 			Optional<Post> post = this.postRepo.findById(postId);
 			if (!post.isEmpty()) {
-				
+				clearCache("UserPost");
+				clearCache("AllPost");
+				clearCache("saved");
 				this.postRepo.deleteById(post.get().getPostId());
 				return new ResponseModel(ErrorConfig.deleteMessage("Post", postId.toString()), HttpStatus.OK);
 			} else {
@@ -308,7 +322,13 @@ public class PostServiceImpl implements PostService {
 		try {
 			Pageable p = PageRequest.of(pageNumber, ApiConstants.PAGE_SIZE);
 			Page<Post> pagePosts = new PageImpl<>(new ArrayList<>());
+			String key = "AllPost";
+			PostResponseModel redisData = (PostResponseModel) redisTemplate.opsForValue().get(key);
 
+		    if (redisData != null) {
+		        return new ResponseObjectModel(redisData, HttpStatus.OK);
+		    }
+	
 			if (sortBy != null && !"".equals(sortBy)) {
 				if (userId != null && sortBy.equalsIgnoreCase("Subscribers")) {
 					{
@@ -333,6 +353,10 @@ public class PostServiceImpl implements PostService {
 			postResponseModel.setTotalElements(pagePosts.getTotalElements());
 			postResponseModel.setTotalPages(pagePosts.getTotalPages());
 			postResponseModel.setLastPage(pagePosts.isLast());
+			if (postResponseModel.getTotalElements()!=0l) {
+	
+				redisTemplate.opsForValue().set(key, postResponseModel, 100, TimeUnit.MINUTES);
+			}
 			return new ResponseObjectModel(postResponseModel, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("getAllPost ", e);
@@ -524,7 +548,11 @@ public class PostServiceImpl implements PostService {
 		PostResponseModel postResponseModel = new PostResponseModel();
 		try {
 			User user = userRepo.getById(userId);
-
+			String key = "UserPost";
+			PostResponseModel redisData = (PostResponseModel) redisTemplate.opsForValue().get(key);
+			   if (redisData != null) {
+			        return new ResponseObjectModel(redisData, HttpStatus.OK);
+			    }
 			Sort sort;
 			if (sortDir.equalsIgnoreCase("asc") || sortDir.equalsIgnoreCase("oldest")) {
 
@@ -547,6 +575,9 @@ public class PostServiceImpl implements PostService {
 			postResponseModel.setTotalElements(pagePosts.getTotalElements());
 			postResponseModel.setTotalPages(pagePosts.getTotalPages());
 			postResponseModel.setLastPage(pagePosts.isLast());
+			if (postResponseModel.getTotalElements()!=0l) {
+				redisTemplate.opsForValue().set(key, postResponseModel, 100, TimeUnit.MINUTES);
+			}
 			return new ResponseObjectModel(postResponseModel, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("getPostByUser ", e);
@@ -614,6 +645,8 @@ public class PostServiceImpl implements PostService {
 				savePost.setUserId(userId);
 				savePost.setPostId(postId);
 				savePostRepo.save(savePost);
+				
+				clearCache("saved");
 				return new ResponseModel("Post successfully saved", HttpStatus.OK);
 			}
 
@@ -653,8 +686,13 @@ public class PostServiceImpl implements PostService {
 				sort = Sort.by(sortBy).descending();
 			}
 			Pageable p = PageRequest.of(pageNumber, ApiConstants.PAGE_SIZE, sort);
+			String key = "saved";
+			PostResponseModel redisData = (PostResponseModel) redisTemplate.opsForValue().get(key);
 
-			List<SavePost> savePostList = savePostRepo.findByUserId(userId);
+		    if (redisData != null) {
+		        return new ResponseObjectModel(redisData, HttpStatus.OK);
+		    }
+			List<SavePost> savePostList = savePostRepo.findByUserIdOrderBySavedAtDesc(userId);
 
 			List<Integer> postIds = new ArrayList<>();
 
@@ -662,8 +700,8 @@ public class PostServiceImpl implements PostService {
 				postIds.add(savePost.getPostId());
 			}
 
-			List<Post> postList = postRepo.getPostByIds(postIds);
-
+			
+			List<Post>  postList=getPostsByIdsInOrder(postIds);
 			Page<Post> pagePosts = convertToPage(postList, p);
 
 			List<Post> posts = pagePosts.getContent();
@@ -675,14 +713,24 @@ public class PostServiceImpl implements PostService {
 			postResponseModel.setTotalElements(pagePosts.getTotalElements());
 			postResponseModel.setTotalPages(pagePosts.getTotalPages());
 			postResponseModel.setLastPage(pagePosts.isLast());
-
+			if (postResponseModel.getTotalElements()!=0l) {
+				redisTemplate.opsForValue().set(key, postResponseModel, 100, TimeUnit.MINUTES);
+			}
 			return new ResponseObjectModel(postResponseModel, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("getPostByUser ", e);
 			return new ResponseObjectModel(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
+	public List<Post> getPostsByIdsInOrder(List<Integer> ids) {
+		List<Post> posts = postRepo.getPostByIds(ids);
+	    Map<Integer, Post> postMap = posts.stream().collect(Collectors.toMap(Post::getPostId, post -> post));
+	    return ids.stream().map(postMap::get).filter(Objects::nonNull).collect(Collectors.toList());
+	}
+	   public void clearCache(String key) {
+	        redisTemplate.delete(key);
+	    }
 	public ResponseModel addLikeAndDisLike(Integer postId, Boolean like, Integer userId) {
 		Optional<Post> postOptional = postRepo.findById(postId);
 		if (postOptional.isEmpty()) {

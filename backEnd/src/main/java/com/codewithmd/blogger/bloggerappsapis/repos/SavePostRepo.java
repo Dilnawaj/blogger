@@ -14,7 +14,7 @@ public interface SavePostRepo extends JpaRepository<SavePost, Integer> {
 	Optional<SavePost> findByUserIdAndPostId(Integer userId, Integer postId);
 
 	List<SavePost> findByUserId(Integer userId);
-	
+	List<SavePost> findByUserIdOrderBySavedAtDesc(Integer userId);
 	
 
 //Page<Post> findByUserAndPost(User user,Post p, Pageable pp);
