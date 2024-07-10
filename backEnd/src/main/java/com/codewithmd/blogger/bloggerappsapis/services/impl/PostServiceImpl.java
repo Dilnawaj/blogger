@@ -129,8 +129,7 @@ public class PostServiceImpl implements PostService {
 			post.setSusbscriberEmail(false);
 			this.postRepo.save(post);
 			postDto = this.modelMapper.map(post, PostDto.class);
-			clearCache("UserPost");
-			clearCache("AllPost");
+
 			return new ResponseModel(postDto, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("createCategory ", e);
@@ -162,8 +161,6 @@ public class PostServiceImpl implements PostService {
 				Optional<Category> category = categoryRepo.findById(postDto.getCategory().getCategoryId());
 				post.setCategory(category.get());
 				this.postRepo.save(post);
-				clearCache("UserPost");
-				clearCache("AllPost");
 				clearCache("saved");
 				return new ResponseModel(ErrorConfig.updateMessage("Post"), HttpStatus.ACCEPTED);
 			} else {
@@ -179,8 +176,7 @@ public class PostServiceImpl implements PostService {
 		try {
 			Optional<Post> post = this.postRepo.findById(postId);
 			if (!post.isEmpty()) {
-				clearCache("UserPost");
-				clearCache("AllPost");
+
 				clearCache("saved");
 				this.postRepo.deleteById(post.get().getPostId());
 				return new ResponseModel(ErrorConfig.deleteMessage("Post", postId.toString()), HttpStatus.OK);
@@ -322,12 +318,6 @@ public class PostServiceImpl implements PostService {
 		try {
 			Pageable p = PageRequest.of(pageNumber, ApiConstants.PAGE_SIZE);
 			Page<Post> pagePosts = new PageImpl<>(new ArrayList<>());
-			String key = "AllPost";
-			PostResponseModel redisData = (PostResponseModel) redisTemplate.opsForValue().get(key);
-
-		    if (redisData != null) {
-		        return new ResponseObjectModel(redisData, HttpStatus.OK);
-		    }
 	
 			if (sortBy != null && !"".equals(sortBy)) {
 				if (userId != null && sortBy.equalsIgnoreCase("Subscribers")) {
@@ -353,10 +343,7 @@ public class PostServiceImpl implements PostService {
 			postResponseModel.setTotalElements(pagePosts.getTotalElements());
 			postResponseModel.setTotalPages(pagePosts.getTotalPages());
 			postResponseModel.setLastPage(pagePosts.isLast());
-			if (postResponseModel.getTotalElements()!=0l) {
 	
-				redisTemplate.opsForValue().set(key, postResponseModel, 100, TimeUnit.MINUTES);
-			}
 			return new ResponseObjectModel(postResponseModel, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("getAllPost ", e);
@@ -364,28 +351,6 @@ public class PostServiceImpl implements PostService {
 		}
 	}
 
-	private List<Post> sortPostByKeywordANdUserAndCondition(String keyword, String sortBy, Integer userId) {
-		List<Integer> userIds = new ArrayList<>();
-		if (sortBy.equalsIgnoreCase("Subscribers")) {
-			userIds = subscribeRepo.findByCurrentSubsciberId(userId);
-		}
-		sortBy = sortBy.toLowerCase();
-		List<Post> pagePosts = new ArrayList<>();
-		switch (sortBy) {
-
-		case "newest":
-			pagePosts = postRepo.findByKeywordAndNew(keyword, userId);
-			break;
-		case "oldest":
-			pagePosts = postRepo.findByKeywordAndOld(keyword, userId);
-			break;
-		default:
-			pagePosts = postRepo.findByKeyword(keyword, userId);
-		}
-
-		return pagePosts;
-
-	}
 
 	private List<Post> sortPostByKeywordAndCondition(String keyword, String sortBy, Integer userId) {
 		List<Integer> userIds = new ArrayList<>();
@@ -548,11 +513,7 @@ public class PostServiceImpl implements PostService {
 		PostResponseModel postResponseModel = new PostResponseModel();
 		try {
 			User user = userRepo.getById(userId);
-			String key = "UserPost";
-			PostResponseModel redisData = (PostResponseModel) redisTemplate.opsForValue().get(key);
-			   if (redisData != null) {
-			        return new ResponseObjectModel(redisData, HttpStatus.OK);
-			    }
+	
 			Sort sort;
 			if (sortDir.equalsIgnoreCase("asc") || sortDir.equalsIgnoreCase("oldest")) {
 
@@ -575,9 +536,7 @@ public class PostServiceImpl implements PostService {
 			postResponseModel.setTotalElements(pagePosts.getTotalElements());
 			postResponseModel.setTotalPages(pagePosts.getTotalPages());
 			postResponseModel.setLastPage(pagePosts.isLast());
-			if (postResponseModel.getTotalElements()!=0l) {
-				redisTemplate.opsForValue().set(key, postResponseModel, 100, TimeUnit.MINUTES);
-			}
+		
 			return new ResponseObjectModel(postResponseModel, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("getPostByUser ", e);
