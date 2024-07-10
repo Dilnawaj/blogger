@@ -218,7 +218,7 @@ public class BloggerServiceImpl implements BloggerService {
 			if (user.isPresent()) {
 
 				if (loginModel.getPassword().equals(user.get().getPassword())) {
-					user.get().setPassword(loginModel.getNewPassword());
+					user.get().setPassword(EncryptionUtils.encrypt(loginModel.getNewPassword()));
 					userRepo.save(user.get());
 					return new ResponseModel("Password updated successfully", HttpStatus.OK, false);
 				}

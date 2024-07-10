@@ -52,6 +52,8 @@ public class User {
 	private boolean isPasswordSet;
 
 	private boolean suspendUser = false;
+	
+	private boolean isGoogleAccount = false;
 
 	private Integer googleLoginCount = 0;
 
@@ -242,6 +244,16 @@ public class User {
 
 	public void setAbusiveWord(String abusiveWord) {
 		this.abusiveWord = abusiveWord;
+	}
+	
+	
+
+	public boolean isGoogleAccount() {
+		return isGoogleAccount;
+	}
+
+	public void setGoogleAccount(boolean isGoogleAccount) {
+		this.isGoogleAccount = isGoogleAccount;
 	}
 
 	@Override

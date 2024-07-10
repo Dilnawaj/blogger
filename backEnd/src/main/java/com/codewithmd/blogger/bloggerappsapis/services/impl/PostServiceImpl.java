@@ -110,6 +110,9 @@ public class PostServiceImpl implements PostService {
 	
 	@Autowired
 	private ReportPostRepo reportPostRepo;
+	
+	@Autowired
+	private CommentRepo commentRepo;
 
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
@@ -178,6 +181,7 @@ public class PostServiceImpl implements PostService {
 			if (!post.isEmpty()) {
 
 				clearCache("saved");
+				commentRepo.deleteAll(this.commentRepo.findByPost(post.get()));
 				this.postRepo.deleteById(post.get().getPostId());
 				return new ResponseModel(ErrorConfig.deleteMessage("Post", postId.toString()), HttpStatus.OK);
 			} else {

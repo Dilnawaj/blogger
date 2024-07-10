@@ -1,5 +1,5 @@
 package com.codewithmd.blogger.bloggerappsapis.services.impl;
-
+import java.text.ParseException;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -97,6 +97,8 @@ public class UserServieImpl implements UserService {
 				}
 				User user = this.dtoToUser(userDto);
 				user.setSuspendUser(false);
+				user.setGoogleAccount(userDto.getAbout().contains("Google"));
+
 				user.setEmail(user.getEmail().toLowerCase().trim());
 				if (JavaHelper.checkStringValue(user.getPassword()).equals("")) {
 					user.setPassword(null);
@@ -108,6 +110,7 @@ public class UserServieImpl implements UserService {
 				user.setProfileCreatedDate(JavaHelper.getCurrentDate().toString());
 				user.setLinkExpiryDate(JavaHelper.getCurrentDate().toString());
 				user.setId(idGenerator());
+				user.setVerificationCode(emailService.getFreshVerificationCode());
 				user.setWelcomeEmail(false);
 				if (Boolean.FALSE.equals(emailService.sendEmailForRegister(user))) {
 					return new ResponseModel("An unknown error occurred.Please try again later.",
@@ -270,9 +273,29 @@ public class UserServieImpl implements UserService {
 		}
 	}
 
-	@Scheduled(cron = "* */5 * * * *")
-	public void welcomeEmailToNewUser() {
+	@Scheduled(cron = "* */2 * * * *")
+	public void welcomeEmailToNewUser() throws ParseException {
 		try {
+			
+			List<User>users = userRepo.getIdsOfUselessUsers();
+			users.stream().forEach(user->{
+				Date expiryDate;
+				try {
+					expiryDate = JavaHelper.dateStringToDate(user.getLinkExpiryDate());
+					Integer minutes = JavaHelper.getDiffInMinutes(expiryDate, JavaHelper.getCurrentDate());
+					if (minutes > 15) {	
+						userRepo.delete(user);
+
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					logger.error("useless user", e);
+				}
+			
+				
+			});
+		
+			
 			List<WelcomeEmailModel> newUsers = userRepo.getIdsOfNewUsers();
 			
 			newUsers.stream().forEach(e->
