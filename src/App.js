@@ -38,6 +38,11 @@ import PostPageUserByCategory from "./pages/PostPageUserByCategory";
 import SavePostPage from "./pages/SavePostPage";
 import PostSavePageByCategory from "./pages/PostSavePageByCategory";
 import UserSavePage from "./pages/UserSavePage";
+import AdminLogin from "./admin/pages/AdminLogin";
+import AdminSignup from "./admin/pages/AdminSignup";
+import AdminForgotPassword from "./admin/pages/AdminForgotPassword";
+import AdminRole from "./admin/pages/AdminRole";
+import AdminDashboard from "./admin/pages/AdminDashboard";
 function App() {
   return (
     <GlobalStateProvider>
@@ -47,14 +52,18 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/signup/admin" element={<AdminSignup />} />
           <Route path="/newFeed" element={<NewFeed />} />
 
           <Route path="/viewprofile/:userId" element={<PublicProfileInfo />} />
 
           <Route path="/login" element={<Login />} />
+          <Route path="/login/admin" element={<AdminLogin />} />
+          <Route path="/forgotpassword/admin" element={<AdminForgotPassword />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="/grant/adminrole" element={<AdminRole />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
 
           <Route path="/home" element={<Home />} />
@@ -89,6 +98,7 @@ function App() {
               path="user/posts/:postId/categorie/:categorieId"
               element={<PostPageUserByCategory />}
             />
+            
  <Route
               path="saved/:postId/categorie/:categorieId"
               element={<UserSavePage />}
@@ -98,6 +108,12 @@ function App() {
               element={<PostSavePageByCategory />}
             />
           </Route>
+          <Route path="/admin" element={<Privateroute />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="Feed" element={<UserFeed />} />
+   
+          </Route>
+
         </Routes>
       </BrowserRouter>
     </GlobalStateProvider>
