@@ -166,6 +166,38 @@ public class EmailService {
 		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
+	@Async
+	public Boolean sendEmailToClientForAdminRole(User user) {
+		
+		String subject = "Password for Admin Role to {clientName}";
+		subject = subject.replace("{clientName}", user.getName());
+
+		String htmlContent = "<html><body><div style=\"max-width: 550px; padding: 18px; border: 1px solid #dadada; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 15px; color: #495057;\"><p style=\"font-size: 17px; font-weight: bold;\">Dear {clientName},</p><p>Your account has been assigned the Admin role. Your password for the Admin role is <strong>{password}</strong> </p><p>If you would like to update your password, please go to the Profile section of your account.</p><p>If you need any assistance, please contact our support team at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color: #3b5de7;\">officialbloggerhub@gmail.com</a>.</p><div style=\"line-height: 30px; color: #303030;\"><p>Regards,<br/><span style=\"font-size: 18px; color: #303030;\">BloggerHub Team</span></p><img src=\"{companyLogo}\" alt=\"Company Logo\" style=\"height: 70px; margin-top: 10px;\"></div></div></body></html>";
+;
+		htmlContent = htmlContent.replace("{password}", user.getPassword());
+		htmlContent = htmlContent.replace("{clientName}", user.getName());
+		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
+
+		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
+
+	}
+	@Async
+	public Boolean sendEmailForRegisterAdmin(User user) {
+		
+		String subject = "Admin Role Access Request to {clientName}";
+		subject = subject.replace("{clientName}", user.getName());
+
+		String htmlContent = "<html><body><div style=\"max-width: 550px; padding: 18px; border: 1px solid #dadada; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 15px; color: #495057;\"><p style=\"font-size: 17px; font-weight: bold;\">Dear Dilnawaj Sir,</p><p>{clientName} with emailAddress : {email} has requested access to the Admin role on our Application. If you would like to grant this access, please click the button below.</p><table style=\"cursor: pointer;\" cellspacing=\"10\" cellpadding=\"0\" border=\"0\"><tbody><tr><td valign=\"middle\" align=\"center\" style=\"background-color: #dc3545; border-radius: 10px; padding: 15px 20px;\"><a href=\"{activationLink}\" style=\"color: #ffffff; text-decoration: none; font-family: Helvetica, Arial, sans-serif; font-size: 18px; line-height: 135%; font-weight: normal; display: block;\" target=\"_blank\">Grant Admin Access</a></td></tr></tbody></table><p>If you do not wish to grant admin access, please disregard this email.</p><p>If you need any assistance, please contact our support team at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color: #3b5de7;\">officialbloggerhub@gmail.com</a>.</p><div style=\"line-height: 30px; color: #303030;\"><p>Regards,<br/><span style=\"font-size: 18px; color: #303030;\">BloggerHub Team</span></p><img src=\"{companyLogo}\" alt=\"Company Logo\" style=\"height: 70px; margin-top: 10px;\"></div></div></body></html>";
+
+		String link = localhost + "grant/adminrole?email=" + user.getEmail();
+		htmlContent = htmlContent.replace("{activationLink}", link);
+		htmlContent = htmlContent.replace("{clientName}", user.getName());
+		htmlContent = htmlContent.replace("{email}", user.getEmail());
+		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
+
+		return sendEmail("dilnawaj4044@gmail.com", subject, htmlContent,"it.1703302@gmail.com");
+
+	}
 @Async
 	public Boolean sendEmailToFriends(Optional<User> user, Optional<Post> post, String email) {
 
@@ -346,7 +378,7 @@ public class EmailService {
 		properties.put("mail.smtp.starttls.enable", true);
 		properties.put("mail.smtp.port", "587");
 		properties.put("mail.smtp.host", "smtp.gmail.com");
-
+		properties.put("mail.smtp.ssl.trust", "*");
 		// session
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -422,38 +454,6 @@ public class EmailService {
 		}
 		return false;
 	}
-//	public boolean sendEmail(String to, String subject, String htmlContent) {
-//	boolean flag = false;
-//
-//	// smtp properties
-//	Properties properties = new Properties();
-//	properties.put("mail.smtp.auth", true);
-//	properties.put("mail.smtp.starttls.enable", true);
-//	properties.put("mail.smtp.port", "587");
-//	properties.put("mail.smtp.host", "smtp.gmail.com");
-//
-//	// session
-//	Session session = Session.getInstance(properties, new Authenticator() {
-//		@Override
-//		protected PasswordAuthentication getPasswordAuthentication() {
-//			return new PasswordAuthentication(username, password);
-//		}
-//	});
-//
-//	try {
-//
-//		Message message = new MimeMessage(session);
-//		message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-//		message.setFrom(new InternetAddress(from));
-//		message.setSubject(subject);
-//		message.setContent(htmlContent, "text/html");
-//		Transport.send(message);
-//		flag = true;
-//	} catch (Exception e) {
-//		e.printStackTrace();
-//	}
-//	return flag;
-//}
 
 	
 }

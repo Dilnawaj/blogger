@@ -18,7 +18,7 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 	
 	List<User> findByVerificationCode(String code);
 	
-	@Query("SELECT new com.codewithmd.blogger.bloggerappsapis.payloads.WelcomeEmailModel(u.email, u.name) FROM User u  WHERE u.welcomeEmail=false and u.isPasswordSet = true ")
+	@Query("SELECT new com.codewithmd.blogger.bloggerappsapis.payloads.WelcomeEmailModel(u.email, u.name) FROM User u  WHERE u.welcomeEmail=false and u.isPasswordSet = true and u.password is not null")
 	public List<WelcomeEmailModel> getIdsOfNewUsers();
 	@Query("SELECT u FROM User u  WHERE u.isGoogleAccount = false  and u.isPasswordSet = false ")
 	public List<User> getIdsOfUselessUsers();
