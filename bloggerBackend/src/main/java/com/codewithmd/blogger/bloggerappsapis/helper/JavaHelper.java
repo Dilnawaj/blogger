@@ -193,5 +193,42 @@ public class JavaHelper {
 		return random.ints(len, randNumOrigin, randNumBound + 1).mapToObj(i -> String.valueOf((char) i))
 				.collect(Collectors.joining());
 	}
+	 public static String generatePassword() {
+	        // Define character sets
+	        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+	        String numbers = "0123456789";
+	        String specialCharacters = "!@#$%^&*()-_+=<>?";
 
+	        // Create a random instance
+	        Random random = new Random();
+
+	        // Ensure at least one character from each set
+	        StringBuilder password = new StringBuilder();
+	        password.append(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+	        password.append(lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length())));
+	        password.append(numbers.charAt(random.nextInt(numbers.length())));
+	        password.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
+
+	        // Fill the remaining characters randomly from all sets
+	        String allCharacters = upperCaseLetters + lowerCaseLetters + numbers + specialCharacters;
+	        for (int i = 4; i < 8; i++) {
+	            password.append(allCharacters.charAt(random.nextInt(allCharacters.length())));
+	        }
+
+	        // Shuffle the characters to ensure randomness
+	        return shuffleString(password.toString());
+	    }
+
+	    private static String shuffleString(String input) {
+	        char[] characters = input.toCharArray();
+	        Random random = new Random();
+	        for (int i = 0; i < characters.length; i++) {
+	            int j = random.nextInt(characters.length);
+	            char temp = characters[i];
+	            characters[i] = characters[j];
+	            characters[j] = temp;
+	        }
+	        return new String(characters);
+	    }
 }

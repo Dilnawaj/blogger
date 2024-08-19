@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-
 import com.codewithmd.blogger.bloggerappsapis.account.entity.ClientRole;
 import com.codewithmd.blogger.bloggerappsapis.account.entity.LoginHistory;
 import com.codewithmd.blogger.bloggerappsapis.account.entity.Role;
@@ -97,7 +96,11 @@ public class BloggerServiceImpl implements BloggerService {
 					return new ResponseModel("User not found ", HttpStatus.BAD_REQUEST, true);
 				} else {
 					User user = userOptional.get();
+					ClientRole clientRole = clientRoleRepo.findByClientId(user.getId().longValue());
 
+					if (clientRole.getRoleId() != 1) {
+						return new ResponseModel("Permission denied", HttpStatus.BAD_REQUEST, true);
+					}
 					if (user.isSuspendUser()) {
 						return new ResponseModel("your account has been suspended due to inappropriate behavior",
 								HttpStatus.BAD_REQUEST, true);
@@ -122,7 +125,7 @@ public class BloggerServiceImpl implements BloggerService {
 		return new ResponseModel("Required parameter missing.", HttpStatus.BAD_REQUEST, true);
 	}
 
-	private ResponseModel getLoginModel(User user, Boolean rememberMe) {
+	public ResponseModel getLoginModel(User user, Boolean rememberMe) {
 		BloggerLoginModel loginModel = new BloggerLoginModel();
 		try {
 			String accessToken = jwtService.getAccessToken(user.getId().longValue(), null, new ArrayList<>());
@@ -196,9 +199,15 @@ public class BloggerServiceImpl implements BloggerService {
 
 	public ResponseModel forgotPassword(LoginModel loginModel) {
 		Optional<User> userOptional = userRepo.findByDobAndEmail(loginModel.getDob(), loginModel.getEmail());
-		if (userOptional.isPresent()) {
+		if (userOptional.isPresent() && !"".equals(JavaHelper.checkStringValue(userOptional.get().getPassword()))) {
 			User user = userOptional.get();
-
+			ClientRole clientRole=	clientRoleRepo.findByClientId(user.getId().longValue());
+			
+			if(clientRole.getRoleId()!=1)
+			{
+				return new ResponseModel("Permission denied",
+						HttpStatus.BAD_REQUEST, true);
+			}
 			if (Boolean.FALSE.equals(emailService.sendEmailForReset(user))) {
 				return new ResponseModel("An unknown error occurred.Please try again later.", HttpStatus.BAD_REQUEST,
 						true);
@@ -237,11 +246,10 @@ public class BloggerServiceImpl implements BloggerService {
 		helperCenter.setTicketId(getSixDigitRandomNumber());
 		helpCenterRepo.save(helperCenter);
 		Optional<User> user = userRepo.findById(helpCenterDto.getUserId());
-		if(user.isPresent())
-		{
+		if (user.isPresent()) {
 			String name = user.get().getName();
 			String email = user.get().getEmail();
-			emailService.sendTicketRecieveEmail(name,email, helperCenter);
+			emailService.sendTicketRecieveEmail(name, email, helperCenter);
 			return new ResponseModel("Feedback successfully submitted", HttpStatus.OK, false);
 		}
 
