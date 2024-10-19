@@ -35,9 +35,10 @@ To run the React app, follow these steps:
 To run the React Backend app, follow these steps:
 1. Open the bloggerBackend directory, It contains the Spring Boot application.
 2. Run MySql server and create database blog_app_apis.
-3. setup App Password ,set Google clientId & JWT key and run spring boot app using below commands:
+3. Setup Smtp using Email and AppPassword & clientId(for google)
+4. Set Email's AppPassword, Google clientId & JWT key into Application properties file 
+5. After Adding all the credentials in Application properties file ,Run spring boot app using below commands:
    ```bash
    mvn clean install -U(if needed)
    mvn clean install
    mvn spring-boot:run
-4. Setup Smtp using Email and AppPassword & clientId(for google)
