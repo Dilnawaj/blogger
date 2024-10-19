@@ -24,8 +24,7 @@ Before running this application, ensure you have the following installed:
 ## Running the React App
 
 To run the React app, follow these steps:
-
-1. Set up environment variables `REACT_APP_CLIENT_KEY` and `REACT_APP_API_KEY`.
+1. Set up the environment variable `REACT_APP_CLIENT_KEY` using your Google Client ID, and `REACT_APP_SERVER_NAME` to specify where your backend code is deployed, such as http://localhost:5000/.
 2. Install dependencies:
    ```bash
    npm install --legacy-peer-deps
