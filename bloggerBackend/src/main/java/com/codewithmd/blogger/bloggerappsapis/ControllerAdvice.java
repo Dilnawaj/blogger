@@ -22,7 +22,7 @@ import com.codewithmd.blogger.bloggerappsapis.exception.BadRequestException;
 
 
 /**
- * @author Waris
+ * @author Dilnawaj
  *
  */
 @org.springframework.web.bind.annotation.ControllerAdvice

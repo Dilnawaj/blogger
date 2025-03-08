@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.codewithmd.blogger.bloggerappsapis.account.model.RoleModel;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -75,6 +77,9 @@ public class BloggerServiceImpl implements BloggerService {
 	@Autowired
 	private RoleRepo roleRepo;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@Value("${clientId}")
 	private String clientId;
 
@@ -137,7 +142,7 @@ public class BloggerServiceImpl implements BloggerService {
 
 			ClientRole clientRole = clientRoleRepo.findByClientId(Long.valueOf(userDto.getId()));
 			Role role = roleRepo.findByRoleId(clientRole.getRoleId());
-			userDto.setRole(role);
+			userDto.setRole(modelMapper.map(role, RoleModel.class));
 			userDto.setPassword(null);
 			loginModel.setUser(userDto);
 			loginModel.setRefreshToken(refreshToken);

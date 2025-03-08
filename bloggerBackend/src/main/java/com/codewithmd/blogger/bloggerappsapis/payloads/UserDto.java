@@ -11,6 +11,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.codewithmd.blogger.bloggerappsapis.account.entity.Role;
+import com.codewithmd.blogger.bloggerappsapis.account.model.RoleModel;
+import com.codewithmd.blogger.bloggerappsapis.account.model.UserType;
 
 public class UserDto {
 	private Integer id;
@@ -46,7 +48,7 @@ public class UserDto {
 
 	private Integer totalSubscriber = 0;
 
-	private Role role;
+	private RoleModel role;
 
 	private List<CommentDto> comments = new ArrayList<>();
 
@@ -57,6 +59,8 @@ public class UserDto {
 	private Integer numberOfViews = 0;
 
 	private Integer numberOfPosts = 0;
+
+	private String userType;
 
 	public Integer getId() {
 		return id;
@@ -163,11 +167,11 @@ public class UserDto {
 		this.verificationCode = verificationCode;
 	}
 
-	public Role getRole() {
+	public RoleModel getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(RoleModel role) {
 		this.role = role;
 	}
 
@@ -210,6 +214,18 @@ public class UserDto {
 
 	public void setTotalSubscriber(Integer totalSubscriber) {
 		this.totalSubscriber = totalSubscriber;
+	}
+
+	public String getUserType() {
+		if(userType==null)
+		{
+			return UserType.NORMAL_USER.toString();
+		}
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 	public Integer getNumberOfViews() {
