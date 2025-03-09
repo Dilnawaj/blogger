@@ -20,7 +20,7 @@ import {
 import { getCurrentUserDetail } from "../auth/Index";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import {isTokenExpired ,getToken} from "../auth/Index";
+import { isTokenExpired, getToken } from "../auth/Index";
 const AddPost = () => {
   const [categories, setCategories] = useState([]);
   const editor = useRef(null);
@@ -33,6 +33,7 @@ const AddPost = () => {
     content: "",
     categoryId: "0",
   });
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
 
   const [image, setImage] = useState(null);
 
@@ -54,17 +55,17 @@ const AddPost = () => {
   };
 
   const createPost = (event) => {
-    let tempCategory=10;
-console.log("Category",category)
-console.log("POst Category",post.categoryId)
-setCategory(tempCategory);
-console.log("Category",category)
+    let tempCategory = 10;
+    console.log("Category", category);
+    console.log("POst Category", post.categoryId);
+    setCategory(tempCategory);
+    console.log("Category", category);
     event.preventDefault();
-    const accessToken =getToken();
+    const accessToken = getToken();
     if (isTokenExpired(accessToken)) {
       toast.error("Session expired");
       navigate("/login");
-     return;
+      return;
     }
 
     if (post.title.trim() === "") {
@@ -75,7 +76,7 @@ console.log("Category",category)
       toast.error("Content is required!!");
       return;
     }
-    if (post.categoryId === null || post.categoryId==0) {
+    if (post.categoryId === null || post.categoryId == 0) {
       toast.error("Select a category");
       return;
     }
@@ -85,15 +86,11 @@ console.log("Category",category)
     doCreatePost(post)
       .then((data) => {
         console.log("image", image);
-    
+
         uploadPostImage(image, data.postId)
-          .then((data) => {
-           
-          })
-          .catch((error) => {
-           
-          });
-          toast.success("Post published successfully");
+          .then((data) => {})
+          .catch((error) => {});
+        toast.success("Post published successfully");
         resetForm();
       })
       .catch((error) => {
@@ -109,6 +106,8 @@ console.log("Category",category)
     });
     setContent("");
     setCategory(0);
+    setImage("");
+  setFileInputKey(Date.now());
   };
   useEffect(() => {
     setUser(getCurrentUserDetail());
@@ -165,7 +164,12 @@ console.log("Category",category)
 
             <div className="mt-3">
               <Label for="image">Select post banner:</Label>
-              <Input id="image" type="file" onChange={handleFileChange} />
+              <Input
+                id="image"
+                type="file"
+                 key={fileInputKey} 
+                onChange={handleFileChange}
+              />
             </div>
 
             <div className="my-6">
@@ -179,7 +183,6 @@ console.log("Category",category)
                 name="categoryId"
                 onChange={fieldChanged}
                 value={post.categoryId} // Update to use post.categoryId instead of category
-                
               >
                 <option disabled value={0}>
                   --Select category--
@@ -199,10 +202,9 @@ console.log("Category",category)
 
               <span style={{ margin: "0 8px" }}></span>
 
-              <Button className="ms-2" color="danger">
-                Rest Content
+              <Button className="ms-2" color="danger" onClick={resetForm}>
+                Reset Content
               </Button>
-           
             </Container>
           </Form>
         </CardBody>
