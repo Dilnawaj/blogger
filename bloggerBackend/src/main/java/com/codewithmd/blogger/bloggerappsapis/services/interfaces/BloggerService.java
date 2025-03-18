@@ -22,7 +22,7 @@ public interface BloggerService {
 
 	ResponseModel getUpdatePassword(@Valid LoginModel loginModel);
 
-	ResponseModel helpCenter(HelpCenterDto helpCenter);
+	void helpCenter(HelpCenterDto helpCenter);
 
 	String getEmailFromGoogleAccessToken(String code) throws GeneralSecurityException, IOException;
 

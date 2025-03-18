@@ -330,7 +330,11 @@ public class UserServieImpl implements UserService {
             }
 
             for (Post post : posts) {
-                String word = containsAbusiveWords(post.getContent());
+
+                String word = containsAbusiveWords(post.getTitle()) != null
+                        ? containsAbusiveWords(post.getTitle())
+                        : containsAbusiveWords(post.getContent());
+
                 if (word != null) {
                     Integer userId = post.getUser().getId();
                     Optional<User> userOpt = userRepo.findById(userId);
@@ -368,7 +372,6 @@ public class UserServieImpl implements UserService {
 
 
     public String containsAbusiveWords(String content) {
-        System.out.println(EncryptionUtils.encrypt(" ass "));
         List<String> abusiveWords = listOfEncryptAllAbusiveWords();
         for (String word : abusiveWords) {
             String decryptWord = EncryptionUtils.decrypt(word).toLowerCase().trim();
@@ -381,7 +384,7 @@ public class UserServieImpl implements UserService {
 
 
     public List<String> listOfEncryptAllAbusiveWords() {
-        return Arrays.asList("3MBcHl9DWyPFYYKhDbPDUA==", "1CztNnwgYiOjlo/+xGzWlg==", "1CztNnwgYiOjlo/+xGzWlg==" + "3SDM498iOtYAn1BkNRoVEg==", "zqXKZSIR3sr8x/5rWNsPPQ==",
+        return Arrays.asList("3MBcHl9DWyPFYYKhDbPDUA==", "1CztNnwgYiOjlo/+xGzWlg==", "1CztNnwgYiOjlo/+xGzWlg==" , "3SDM498iOtYAn1BkNRoVEg==", "zqXKZSIR3sr8x/5rWNsPPQ==",
                 "BlVGNhrx561T+8vPPu82WA==", "KvZJotNfTFw+J+h+EfQReA==", "66RV0phDkgIqiQKDMni8Tg==",
                 "10KHSgiCvQZgW0WCtCu4cA==", "VLQkDtvF14L1Od29v0japQ==", "eVWuvIvtTX1x0MQjbLkIHA==",
                 "LoebPo+ZE5Ey7tP8kiDUaw==", "0WYieOQdraZ8jsazF3p6Bg==", "lasw5CBV5UGpoxG8fo86lA==",

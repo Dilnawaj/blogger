@@ -4,7 +4,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { useParams } from "react-router";
 import UserContext from "../context/userContext";
 import { getCurrentUserDetail, isLoggedIn } from "../auth/Index";
-import { loadPost, updatePosts, uploadPostImage } from "../services/PostService";
+import {
+  loadPost,
+  updatePosts,
+  uploadPostImage,
+} from "../services/PostService";
 import { toast } from "react-toastify";
 import {
   Button,
@@ -27,8 +31,15 @@ function UpdateBlog() {
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState(0);
   const [post, setPost] = useState(null);
+    const { sortBy } = useParams();
+    const { postId } = useParams();
+    const { type } = useParams();
+    const { pageNumber } = useParams();
+    const { keyword } = useParams();
+  const [resetPost, setResetPost] = useState(null);
   useEffect(() => {
     console.log("Post", post);
+    
     if (post !== null) {
       console.log("Current User", getCurrentUserDetail().id);
       console.log("post Id", post.user.id);
@@ -39,19 +50,45 @@ function UpdateBlog() {
       }
     }
   }, [post]);
-
-
+  const handleGoBack = () => {
+    const currentUrl = window.location.pathname;
+       // Get dynamic values from state or props (assumed to be available in the component)
+       const currentPageNumber = pageNumber; // or get from state/props
+       const currentSortBy = sortBy; // or get from state/props
+       const currentKeyword = keyword; // or get from state/props
+       localStorage.setItem("sortBy", currentSortBy);
+       localStorage.setItem("pageNumber", currentPageNumber);
+       localStorage.setItem("keyword", currentKeyword);
+     
+    console.log("Current URL", `/user/Feed?pageNumber=${pageNumber}&keyword=${currentKeyword}`);
+    //  window.location.reload();
+    if(type==="home")
+    {
+      navigate(`/home?pageNumber=${currentPageNumber}&sortBy=${currentSortBy}&keyword=${currentKeyword}`);
+     
+    } else if(type==="save"){
+      navigate(`/user/save`);
+    }
+    else{
+      navigate(`/user/Feed?pageNumber=${pageNumber}&sortBy=${sortBy}&keyword=${currentKeyword}`);
+    }
+   
+    //window.location.reload();
+  };
   useEffect(() => {
+    console.log("POST", post);
     loadPost(blogId)
       .then((data) => {
         console.log("Data", data);
-        setPost({ ...data, categoryId: data.category });
+        setPost({ ...data, category: data.category });
+        setResetPost({ ...data });
       })
       .catch((error) => {
         console.log(error);
         toast.error("Error in loading blog");
         navigate("/home");
       });
+    console.log("Category data", category);
   }, [blogId]);
   const config = useMemo(
     () => ({
@@ -76,26 +113,23 @@ function UpdateBlog() {
     event.preventDefault();
     console.log(post);
 
-    updatePosts(
-      { ...post, category: post.category },
-      post.postId
-    )
+    updatePosts({ ...post, category: post.category }, post.postId)
       .then((res) => {
         console.log(res);
         toast.success("Post updated successfully");
-        
-        uploadPostImage(image, post.postId)
-        .then((data) => {
-         
-        })
-        .catch((error) => {
+if(image!=null)
+{
+ uploadPostImage(image, post.postId)
+          .then((data) => {})
+          .catch((error) => {});
+}
        
-        });
       })
       .catch((error) => {
         console.log(error);
         toast.error("Error in updating post");
       });
+      handleGoBack();
   };
 
   useEffect(() => {
@@ -107,24 +141,40 @@ function UpdateBlog() {
         console.error(error);
       });
   }, []);
-  const fieldChanged = (event) => {
-    setPost({ ...post, [event.target.name]: event.target.value });
+
+  const resetForm = () => {
+    console.log("kyu nhi chl rha");
+    setPost({ ...post, title: resetPost.title, content: resetPost.content ,category: resetPost.category  });
+    console.log("Bs chl gya bhai");
   };
 
   const handleChange = (event, fieldName) => {
-    setPost({
-      ...post,
-      [fieldName]: event.target.value,
-    });
+    if (fieldName === "categoryId") {
+      const selectedCategoryId = event.target.value;
+      setCategory(selectedCategoryId);
+      setPost({
+        ...post,
+        category: {
+          ...post.category,
+          categoryId: selectedCategoryId, // Update nested categoryId directly
+        },
+      });
+    } else {
+      setPost({
+        ...post,
+        [fieldName]: event.target.value,
+      });
+    }
   };
+
   const updateHtml = () => {
     return (
       <div className="body">
         <Card className="shadow-md">
           <CardBody>
             <h3>Update post from here!!</h3>
-
             <Form onSubmit={updatePost}>
+              
               <div className="my-3">
                 <Label for="title">Post Title</Label>
                 <Input
@@ -149,22 +199,20 @@ function UpdateBlog() {
                 />
               </div>
 
-            
               <div className="mt-3">
-              <Label for="image">Select post banner:</Label>
-              <Input id="image" type="file" onChange={handleFileChange} />
-            </div>
+                <Label for="image">Select post banner:</Label>
+                <Input id="image" type="file" onChange={handleFileChange} />
+              </div>
               <div className="my-6">
                 <Label for="category">Post Category :</Label>
                 &nbsp; &nbsp;
                 <Input
                   type="select"
                   id="category"
-                  placeholder="Enter here"
                   className="rounded-0"
                   name="categoryId"
-                  onChange={(event) => handleChange(event, "category")}
-                  value={post.category.categoryId} // Update to use post.categoryId instead of category
+                  onChange={(event) => handleChange(event, "categoryId")}
+                  value={post.category?.categoryId || 0} // Handle initial state gracefully
                 >
                   <option disabled value={0}>
                     --Select category--
@@ -187,7 +235,7 @@ function UpdateBlog() {
 
                 <span style={{ margin: "0 8px" }}></span>
 
-                <Button className="ms-2" color="danger">
+                <Button className="ms-2" color="danger" onClick={resetForm}>
                   Rest Content
                 </Button>
               </Container>

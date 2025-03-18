@@ -76,7 +76,6 @@ function App() {
             path="/posts/:postId/categorie/:categorieId"
             element={<PostPageByCategory />}
           />
-{/* //user/save/${post.postId}/categorie/${post.category.categoryId} */}
           <Route path="/posts/:postId" element={<LinkPostPage />} />
           <Route
             path="/userposts/:postId/pageNumber/:pageNumber/sortBy/:sortBy/keyword/:keyword"
@@ -91,7 +90,7 @@ function App() {
             <Route path="save" element={<SaveFeed />} />
             <Route path="custom/category" element={<CustomCategory />} />
             <Route path="viewprofile/:userId" element={<ProfileInfo />} />
-            <Route path="updateblog/:blogId" element={<UpdateBlog />} />
+            <Route path="type/:type/updateblog/:blogId/pageNumber/:pageNumber/sortBy/:sortBy/keyword/:keyword" element={<UpdateBlog />} />
             <Route path="updatepassword" element={<UpdatePassword />} />
             <Route path="help" element={<HelpCenter />} />
             <Route

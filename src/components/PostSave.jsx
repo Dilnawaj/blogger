@@ -1,7 +1,15 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, CardBody, CardText } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  Modal,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
 import { getCurrentUserDetail, isLoggedIn } from "../auth/Index";
 import { unSavePost } from "../services/PostService";
 import { toast } from "react-toastify";
@@ -22,6 +30,7 @@ function PostSave({
       ? formattedContent.substring(0, 500) + "..."
       : formattedContent;
   const [login, setLogin] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);
   useEffect(() => {
@@ -38,7 +47,49 @@ function PostSave({
     setLogin(isLoggedIn());
   }, []);
 
+  const confirmDelete =()=>{
+    deletePost(post)
+    setShowPopup(false);
 
+  }
+  const getSortBy = () => {
+    console.log("Sort");
+    const urlParams = new URLSearchParams(window.location.search);
+    let sortBy = urlParams.get("sortBy");
+    console.log("Sortest", sortBy);
+    if (!sortBy) {
+      sortBy = "newest"; // Set it to 'newest' if it's null, empty, or undefined
+    }
+    console.log("Sortested", sortBy);
+    return sortBy;
+  };
+  const getPageNumber = () => {
+    // Replace this with logic to get the current page number from state or props
+    const urlParams = new URLSearchParams(window.location.search);
+    return parseInt(urlParams.get("pageNumber"));
+  };
+
+  const getKeyword = () => {
+    console.log("Keyword");
+    // Replace this with logic to get the current page number from state or props
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("Parse Int", urlParams.get("keyword"));
+    let keywords = urlParams.get("keyword");
+
+    if (!keywords) {
+      keywords = null; // Set it to 'newest' if it's null, empty, or undefined
+    }
+
+    return keywords;
+  };
+  const cancelDelete =()=>{
+    setShowPopup(false);
+  }
+  const deletePostData = () => {
+    console.log("yeh post hatt kese rhe hai")
+    setShowPopup(true);
+    console.log("Dekhte hai")
+  };
   const unsavePostOfUser = () => {
     if (!isLoggedIn()) {
       toast.error("Need to login first!!");
@@ -79,17 +130,52 @@ function PostSave({
           {isLoggedIn() && getCurrentUserDetail().id === post.user.id && (
             <>
               &nbsp;&nbsp;
-              <Button onClick={() => deletePost(post)} color="danger">
+              <Button onClick={deletePostData} color="danger">
                 Delete
               </Button>
               &nbsp;&nbsp;
               <Button
                 tag={Link}
-                to={`/user/updateblog/${post.postId}`}
+                to={`/user/type/save/updateblog/${
+                  post.postId
+                }/pageNumber/${getPageNumber()}/sortBy/${getSortBy()}/keyword/${getKeyword()}`}
                 color="warning"
               >
                 Update
               </Button>
+              <Modal isOpen={showPopup} centered>
+                <ModalBody style={{ height: "100px", overflowY: "auto" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "80%",
+                    }}
+                  >
+                    <div
+                      style={{
+                        textAlign: "center",
+                        fontSize: "30px",
+                        fontWeight: "bold",
+                        color: "black",
+                     
+                      }}
+                    >
+                 Are you sure you want to delete {post.title} ?
+                    </div>
+                  </div>
+                  {/* Add any additional content you want here */}
+                </ModalBody>
+                <ModalFooter className="d-flex justify-content-center">
+                  <Button color="danger" onClick={confirmDelete}>
+                    Delete
+                  </Button>
+                  <Button color="success" onClick={cancelDelete}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </Modal>
             </>
           )}
         </div>

@@ -10,7 +10,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class CategoryDto {
 	
 	private Integer categoryId;
@@ -22,6 +21,16 @@ public class CategoryDto {
 	
 	@NotNull
 	private String categoryDescription;
+
+	public CategoryDto() {
+
+	}
+
+	public CategoryDto(Integer categoryId, String categoryTitle, String categoryDescription) {
+		this.categoryId = categoryId;
+		this.categoryTitle = categoryTitle;
+		this.categoryDescription = categoryDescription;
+	}
 
 	public Integer getCategoryId() {
 		return categoryId;

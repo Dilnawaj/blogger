@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Base from "../components/Base";
 import AddPost from "../components/AddPost";
-import { Button, Col, Container, Row, Modal, ModalBody, ModalFooter } from "reactstrap";
-import {  getCurrentUserDetail } from "../auth/Index";
+import {
+  Button,
+  Col,
+  Container,
+  Row,
+  Modal,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
+import { getCurrentUserDetail } from "../auth/Index";
 import {
   deletePostService,
   loadPostCategoryWise,
@@ -14,21 +22,21 @@ import Post from "../components/Post";
 import CategorySideMenu from "../components/CategorySideMenu";
 import { Link } from "react-router-dom";
 import { cancelUpdatePassword, updatePassword } from "../services/User-Service";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const UserDashboard = () => {
   const [user, setUser] = useState([]);
   const [posts, setPosts] = useState([]);
   const [showPopup, setShowPopup] = useState(false); // State to manage the visibility of the popup
   const navigate = useNavigate();
   useEffect(() => {
-      // Check if the access token is expired
-  // const accessToken =getToken();
-  // console.log("AccessToken",accessToken)
-  // if (accessToken && isTokenExpired(accessToken)) {
-  //   doLogout(); // Call the logout function
-  //   console.log("LOGOUT")
-  //   return; // Stop further processing
-  // }
+    // Check if the access token is expired
+    // const accessToken =getToken();
+    // console.log("AccessToken",accessToken)
+    // if (accessToken && isTokenExpired(accessToken)) {
+    //   doLogout(); // Call the logout function
+    //   console.log("LOGOUT")
+    //   return; // Stop further processing
+    // }
     console.log("User", getCurrentUserDetail());
     setUser(getCurrentUserDetail());
     updatePasswordAlert()
@@ -39,7 +47,7 @@ const UserDashboard = () => {
       })
       .catch((error) => {
         console.log(error);
-       // toast.error("Error is updatePasswordAlert");
+        // toast.error("Error is updatePasswordAlert");
       });
     loadPostData();
   }, []);
@@ -63,7 +71,7 @@ const UserDashboard = () => {
     //   .catch((error) => {
     //     console.log(error);
     //   });
-      setShowPopup(false);
+    setShowPopup(false);
   }
 
   function handleAdd() {
@@ -92,25 +100,46 @@ const UserDashboard = () => {
 
       {/* Popup */}
       <Modal isOpen={showPopup} centered>
-  <ModalBody style={{ height: '100px', overflowY: 'auto' }}>
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80%' }}>
-      <div style={{ textAlign: 'center', fontSize: '30px', fontWeight: 'bold', color: 'black', textDecoration: 'underline' }}>
-        Please Add Password
-      </div>
-    </div>
-    {/* Add any additional content you want here */}
-  </ModalBody>
-  <ModalFooter className="d-flex justify-content-center">
-    <Button color="danger" onClick={handleCancel}>
-      Later
-    </Button>
-    <Button color="success" onClick={handleAdd}>
-      ADD
-    </Button>
-  </ModalFooter>
-</Modal>
-
-
+        <ModalBody
+          className="btn-secondary"
+          style={{ height: "100px", overflowY: "auto" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "80%",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "30px",
+                fontWeight: "bold",
+                color: "black",
+               
+              }}
+            >
+              Please Add Password
+            </div>
+          </div>
+          {/* Add any additional content you want here */}
+        </ModalBody>
+        <ModalFooter
+          className="d-flex justify-content-center"
+          style={{
+            backgroundColor: "#1a1a1a",
+          }}
+        >
+          <Button color="danger" onClick={handleCancel}>
+            Later
+          </Button>
+          <Button color="success" onClick={handleAdd}>
+            ADD
+          </Button>
+        </ModalFooter>
+      </Modal>
     </Base>
   );
 };

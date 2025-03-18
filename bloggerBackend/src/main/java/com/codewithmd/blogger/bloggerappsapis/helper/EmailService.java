@@ -235,11 +235,11 @@ public class EmailService {
 	}
 @Async
 	public Boolean sendEmail(String to, String subject, String body,String cc) {
-		return sendEmail(to, subject, body, cc, "dilnawaj4044@gmail", base64ToImage());
+		return sendEmail(to, subject, body, cc, "dilnawaj4044@gmail.com", base64ToImage());
 
 	}
-	
-	public boolean sendTicketRecieveEmail( String userName,String userEmail,HelpCenter helperCenter) {
+	@Async
+	public void sendTicketRecieveEmail( String userName,String userEmail,HelpCenter helperCenter) {
 		
 		String subject = " Ticket Received  {Ticket}";
 		subject = subject.replace("{Ticket}", helperCenter.getTicketId().toString());
@@ -251,7 +251,7 @@ public class EmailService {
 
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
 
-		return sendEmail(userEmail, subject, htmlContent,"it.1703302@gmail.com");
+		 sendEmail(userEmail, subject, htmlContent,"it.1703302@gmail.com");
 
 	}
 
@@ -378,8 +378,9 @@ public class EmailService {
 		properties.put("mail.smtp.starttls.enable", true);
 		properties.put("mail.smtp.port", "587");
 		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.ssl.trust", "*");
-		// session
+	properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
+	// session
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -389,7 +390,8 @@ public class EmailService {
 		try {
 			Message message = new MimeMessage(session);
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setFrom(new InternetAddress("BloggerHub" + " <" + from + ">"));
+			message.setFrom(new InternetAddress(from,"BloggerHub" + " <" + from + ">"));
+
 
 			// Set CC recipients if ccEmails list is not null or empty
 			if (ccEmails != null && !ccEmails.isEmpty()) {
@@ -450,8 +452,9 @@ public class EmailService {
 
 			return true;
 		} catch (Exception e) {
-
+System.out.println("exception"+e);
 		}
+	System.out.println("false");
 		return false;
 	}
 

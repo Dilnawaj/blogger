@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.codewithmd.blogger.bloggerappsapis.account.entity.ClientRole;
@@ -243,7 +244,7 @@ public class BloggerServiceImpl implements BloggerService {
 		return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
 	}
 
-	public ResponseModel helpCenter(HelpCenterDto helpCenterDto) {
+	public void helpCenter(HelpCenterDto helpCenterDto) {
 		HelpCenter helperCenter = new HelpCenter();
 		helperCenter.setUserId(helpCenterDto.getUserId());
 		helperCenter.setSubject(helpCenterDto.getSubject());
@@ -255,11 +256,10 @@ public class BloggerServiceImpl implements BloggerService {
 			String name = user.get().getName();
 			String email = user.get().getEmail();
 			emailService.sendTicketRecieveEmail(name, email, helperCenter);
-			return new ResponseModel("Feedback successfully submitted", HttpStatus.OK, false);
+
 		}
 
-		return new ResponseModel("There is an error in feedback service", HttpStatus.BAD_REQUEST, false);
-	}
+		}
 
 	public static int getSixDigitRandomNumber() {
 		try {

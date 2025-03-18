@@ -35,7 +35,18 @@ import com.codewithmd.blogger.bloggerappsapis.payloads.SortDirEnum;
 import com.codewithmd.blogger.bloggerappsapis.services.impl.PostServiceImpl;
 import com.codewithmd.blogger.bloggerappsapis.services.interfaces.FileService;
 import com.codewithmd.blogger.bloggerappsapis.services.interfaces.PostService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.*;
+import java.nio.file.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/post")
@@ -269,6 +280,48 @@ public class PostController {
 		ResponseObjectModel response = this.postService.reportPostFeed(postId, userId);
 		return new ResponseEntity<>(response.getResponse().toString(), response.getResponseCode());
 	}
+
+	@GetMapping("/download-all")
+	public ResponseEntity<InputStreamResource> downloadAllImages() {
+		try {
+			Path directoryPath = Paths.get(path);
+			if (!Files.exists(directoryPath)) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Directory not found");
+			}
+
+			// Create a temporary zip file
+			File zipFile = File.createTempFile("images-", ".zip");
+
+			try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+				Files.walk(directoryPath)
+						.filter(Files::isRegularFile)
+						.filter(path -> path.toString().matches(".*\\.(jpg|jpeg|PNG|png|gif)$"))
+						.forEach(path -> {
+							try {
+								// Add file to zip
+								zipOutputStream.putNextEntry(new ZipEntry(path.getFileName().toString()));
+								Files.copy(path, zipOutputStream);
+								zipOutputStream.closeEntry();
+							} catch (IOException e) {
+								throw new RuntimeException("Error while zipping file: " + path, e);
+							}
+						});
+			}
+
+			// Return zip file as response
+			InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile));
+
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"images.zip\"")
+					.header(HttpHeaders.CONTENT_TYPE, "application/zip")
+					.contentLength(zipFile.length())
+					.body(resource);
+
+		} catch (IOException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create zip file", e);
+		}
+	}
+
 
 //	@CrossOrigin
 //	@GetMapping(value = "/save/category/{categoryId}/user/{userId}", produces = "application/json; charset=utf-8")

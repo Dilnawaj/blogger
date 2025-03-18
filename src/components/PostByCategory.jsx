@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, Card, CardBody, CardText } from "reactstrap";
 import { getCurrentUserDetail, isLoggedIn } from "../auth/Index";
 import { unSavePost } from "../services/PostService";
@@ -23,7 +23,12 @@ function PostByCategory({
       : formattedContent;
   const [login, setLogin] = useState(null);
   const [user, setUser] = useState(null);
-  const [pageNumber, setPageNumber] = useState(0);
+  
+  const { sortBy } = useParams();
+  const { postId } = useParams();
+  const { pageNumber } = useParams();
+  const { keyword } = useParams();
+
   useEffect(() => {
 
     console.log("Bebo")
@@ -37,8 +42,53 @@ function PostByCategory({
     setUser(getCurrentUserDetail());
     setLogin(isLoggedIn());
   }, []);
+  const getSortBy = () => {
+    console.log("Sort");
+    const urlParams = new URLSearchParams(window.location.search);
+    let sortBy = urlParams.get("sortBy");
+    console.log("Sortest", sortBy);
+    if (!sortBy) {
+      sortBy = "newest"; // Set it to 'newest' if it's null, empty, or undefined
+    }
+    console.log("Sortested", sortBy);
+    return sortBy;
+  };
+  const getPageNumber = () => {
+    // Replace this with logic to get the current page number from state or props
+    const urlParams = new URLSearchParams(window.location.search);
+    return parseInt(urlParams.get("pageNumber"));
+  };
 
+  const getKeyword = () => {
+    console.log("Keyword");
+    // Replace this with logic to get the current page number from state or props
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("Parse Int", urlParams.get("keyword"));
+    let keywords = urlParams.get("keyword");
 
+    if (!keywords) {
+      keywords = null; // Set it to 'newest' if it's null, empty, or undefined
+    }
+
+    return keywords;
+  };
+  
+  const handleGoBack = () => {
+    const currentUrl = window.location.pathname;
+       // Get dynamic values from state or props (assumed to be available in the component)
+       const currentPageNumber = pageNumber; // or get from state/props
+       const currentSortBy = sortBy; // or get from state/props
+       const currentKeyword = keyword; // or get from state/props
+       localStorage.setItem("sortBy", currentSortBy);
+       localStorage.setItem("pageNumber", currentPageNumber);
+       localStorage.setItem("keyword", currentKeyword);
+     
+    console.log("Current URL", `/user/Feed?pageNumber=${pageNumber}&keyword=${currentKeyword}`);
+  
+   
+   // navigate(`/user/Feed?pageNumber=${pageNumber}&sortBy=${sortBy}&keyword=${currentKeyword}`);
+  
+  };
   const unsavePostOfUser = () => {
     if (!isLoggedIn()) {
       toast.error("Need to login first!!");
@@ -85,7 +135,9 @@ function PostByCategory({
               &nbsp;&nbsp;
               <Button
                 tag={Link}
-                to={`/user/updateblog/${post.postId}`}
+                to={`/user/updateblog/${
+                  post.postId
+                }/pageNumber/${getPageNumber()}/sortBy/${getSortBy()}/keyword/${getKeyword()}`}
                 color="warning"
               >
                 Update

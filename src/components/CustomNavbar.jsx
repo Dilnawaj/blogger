@@ -14,7 +14,13 @@ import {
   DropdownItem,
   NavbarText,
 } from "reactstrap";
-import { doLogout,getToken, isTokenExpired,getCurrentUserDetail, isLoggedIn } from "../auth/Index";
+import {
+  doLogout,
+  getToken,
+  isTokenExpired,
+  getCurrentUserDetail,
+  isLoggedIn,
+} from "../auth/Index";
 import { Link, useNavigate } from "react-router-dom";
 import ContextUserProvider from "../context/ContextUserProvider";
 import { toast } from "react-toastify";
@@ -39,14 +45,14 @@ function CustomNavbar() {
   const handleHelpCenterMouseEnter = () => {
     setIsHelpCenterHovered(true);
   };
-  
+
   const handleHelpCenterMouseLeave = () => {
     setIsHelpCenterHovered(false);
   };
   const handleMoreMouseEnter = () => {
     setIsMoreHovered(true);
   };
-  
+
   const handleMoreMouseLeave = () => {
     setIsMoreHovered(false);
   };
@@ -54,21 +60,21 @@ function CustomNavbar() {
   const handleNewFeedMouseEnter = () => {
     setIsNewFeedHovered(true);
   };
-  
+
   const handleNewFeedMouseLeave = () => {
     setIsNewFeedHovered(false);
   };
   const handleLoginMouseEnter = () => {
     setIsLoginHovered(true);
   };
-  
+
   const handleLoginMouseLeave = () => {
     setIsLoginHovered(false);
   };
   const handleSaveFeedMouseEnter = () => {
     setIsSaveFeedHovered(true);
   };
-  
+
   const handleSaveFeedMouseLeave = () => {
     setIsSaveFeedHovered(false);
   };
@@ -76,54 +82,51 @@ function CustomNavbar() {
   const handleAboutMouseEnter = () => {
     setIsAboutHovered(true);
   };
-  
+
   const handleAboutMouseLeave = () => {
     setIsAboutHovered(false);
   };
   const handleAddFeedMouseEnter = () => {
     setIsAddFeedHovered(true);
   };
-  
+
   const handleAddFeedMouseLeave = () => {
     setIsAddFeedHovered(false);
   };
-  
+
   const handleUserFeedMouseEnter = () => {
     setIsUserFeedHovered(true);
   };
-  
+
   const handleUserFeedMouseLeave = () => {
     setIsUserFeedHovered(false);
   };
   const handleLogoutMouseEnter = () => {
     setIsLogoutHovered(true);
   };
-  
+
   const handleLogoutMouseLeave = () => {
     setIsLogoutHovered(false);
   };
   const handleUserMouseEnter = () => {
     setIsUserHovered(true);
   };
-  
+
   const handleUserMouseLeave = () => {
     setIsUserHovered(false);
   };
   useEffect(() => {
-    
     const userDetail = getCurrentUserDetail();
-    
-    if (typeof userDetail !== "undefined") {
 
+    if (typeof userDetail !== "undefined") {
       const checkTokenExpiration = () => {
         const accessToken = getToken();
-        
+
         if (isTokenExpired(accessToken)) {
           console.log("Access token expired");
-  
+
           logout(true); // Call the logout function
         }
-  
       };
 
       const intervalId = setInterval(checkTokenExpiration, 5000);
@@ -133,29 +136,27 @@ function CustomNavbar() {
     }
   }, [login]);
   useEffect(() => {
-    if (typeof getCurrentUserDetail() !== "undefined") 
-    {
-    setLogin(isLoggedIn());
-    setUser(getCurrentUserDetail());
-  }
+    if (typeof getCurrentUserDetail() !== "undefined") {
+      setLogin(isLoggedIn());
+      setUser(getCurrentUserDetail());
+    }
   }, [login]);
 
   const logout = (sessionExpire) => {
-   console.log("Seeesiosn",sessionExpire)
+    console.log("Seeesiosn", sessionExpire);
 
     setTimeout(() => {
-      if(sessionExpire==true)
-{
-      toast.error("Session expired, Please do login again to continue using BloggerHub.",
-      {
-        style: {
-          width: "580px",
-        },
-        autoClose: 12000, // Display the toast for 8 seconds
+      if (sessionExpire == true) {
+        toast.error(
+          "Session expired, Please do login again to continue using BloggerHub.",
+          {
+            style: {
+              width: "580px",
+            },
+            autoClose: 12000, // Display the toast for 8 seconds
+          }
+        );
       }
-      
-      );
-    }
       doLogout(() => {
         console.log("LOGOUT Boom");
         setLogin(false);
@@ -163,7 +164,7 @@ function CustomNavbar() {
       });
     }); // Adjust delay time as needed (in milliseconds)
   };
-  
+
   return (
     <div>
       <ContextUserProvider userName={user?.name}>
@@ -222,7 +223,9 @@ function CustomNavbar() {
                         borderRadius: "5px",
                         padding: "8px 12px",
                         transition: "all 0.2s ease-in-out",
-                        backgroundColor: isAddFeedHovered ? "#e6e6e6" : "transparent",
+                        backgroundColor: isAddFeedHovered
+                          ? "#e6e6e6"
+                          : "transparent",
                         color: isAddFeedHovered ? "#333" : "#e6e6e6",
                         marginRight: "10px", // Add margin-right for spacing
                       }}
@@ -231,27 +234,29 @@ function CustomNavbar() {
                     </NavLink>
                   </NavItem>
                   <NavItem>
-                <NavLink
-                  tag={ReactLink}
-                  to="/user/Feed"
-                  onMouseEnter={handleUserFeedMouseEnter}
-                  onMouseLeave={handleUserFeedMouseLeave}
-                  style={{
-                    color: "#e6e6e6",
-                    fontWeight: "bold",
-                    fontFamily: "Montserrat, sans-serif",
-                    border: "1px solid #e6e6e6",
-                    borderRadius: "5px",
-                    padding: "8px 12px",
-                    transition: "all 0.2s ease-in-out",
-                    backgroundColor: isUserFeedHovered ? "#e6e6e6" : "transparent",
-                    color: isUserFeedHovered ? "#333" : "#e6e6e6",
-                    marginRight: "10px", // Add margin-right for spacing
-                  }}
-                >
-                  UserFeed
-                </NavLink>
-              </NavItem>
+                    <NavLink
+                      tag={ReactLink}
+                      to="/user/Feed?pageNumber=0"
+                      onMouseEnter={handleUserFeedMouseEnter}
+                      onMouseLeave={handleUserFeedMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isUserFeedHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isUserFeedHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      UserFeed
+                    </NavLink>
+                  </NavItem>
                 </Fragment>
               )}
 
@@ -269,7 +274,9 @@ function CustomNavbar() {
                     borderRadius: "5px",
                     padding: "8px 12px",
                     transition: "all 0.2s ease-in-out",
-                    backgroundColor: isNewFeedHovered ? "#e6e6e6" : "transparent",
+                    backgroundColor: isNewFeedHovered
+                      ? "#e6e6e6"
+                      : "transparent",
                     color: isNewFeedHovered ? "#333" : "#e6e6e6",
                     marginRight: "10px", // Add margin-right for spacing
                   }}
@@ -278,30 +285,31 @@ function CustomNavbar() {
                 </NavLink>
               </NavItem>
               {login && (
-              <NavItem>
-                <NavLink
-                  tag={ReactLink}
-                  to="/user/save"
-                  onMouseEnter={handleSaveFeedMouseEnter}
-                  onMouseLeave={handleSaveFeedMouseLeave}
-                  style={{
-                    color: "#e6e6e6",
-                    fontWeight: "bold",
-                    fontFamily: "Montserrat, sans-serif",
-                    border: "1px solid #e6e6e6",
-                    borderRadius: "5px",
-                    padding: "8px 12px",
-                    transition: "all 0.2s ease-in-out",
-                    backgroundColor: isSaveFeedHovered ? "#e6e6e6" : "transparent",
-                    color: isSaveFeedHovered ? "#333" : "#e6e6e6",
-                    marginRight: "10px", // Add margin-right for spacing
-                  }}
-                >
-                  SaveFeed
-                </NavLink>
-              </NavItem>
-              )
-}
+                <NavItem>
+                  <NavLink
+                    tag={ReactLink}
+                    to="/user/save"
+                    onMouseEnter={handleSaveFeedMouseEnter}
+                    onMouseLeave={handleSaveFeedMouseLeave}
+                    style={{
+                      color: "#e6e6e6",
+                      fontWeight: "bold",
+                      fontFamily: "Montserrat, sans-serif",
+                      border: "1px solid #e6e6e6",
+                      borderRadius: "5px",
+                      padding: "8px 12px",
+                      transition: "all 0.2s ease-in-out",
+                      backgroundColor: isSaveFeedHovered
+                        ? "#e6e6e6"
+                        : "transparent",
+                      color: isSaveFeedHovered ? "#333" : "#e6e6e6",
+                      marginRight: "10px", // Add margin-right for spacing
+                    }}
+                  >
+                    SaveFeed
+                  </NavLink>
+                </NavItem>
+              )}
               <NavItem></NavItem>
 
               <UncontrolledDropdown nav inNavbar>
@@ -350,59 +358,59 @@ function CustomNavbar() {
                   >
                     Contact Us
                   </DropdownItem>
-                
-              
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
             <Nav navbar>
               {login && (
                 <Fragment>
-        <NavItem>
-  <NavLink
-    tag={ReactLink}
-    to="/user/help"
-    onMouseEnter={handleHelpCenterMouseEnter}
-    onMouseLeave={handleHelpCenterMouseLeave}
-    style={{
-      color: "#e6e6e6",
-      fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
-      border: "1px solid #e6e6e6",
-      borderRadius: "5px",
-      padding: "8px 12px",
-      transition: "all 0.2s ease-in-out",
-      backgroundColor: isHelpCenterHovered ? "#e6e6e6" : "transparent",
-      color: isHelpCenterHovered ? "#333" : "#e6e6e6",
-      marginRight: "10px", // Add margin-right for spacing
-    }}
-  >
-    Help Center
-  </NavLink>
-</NavItem>
-<NavItem>
-  <NavLink
-    onClick={logout}
-    onMouseEnter={handleLogoutMouseEnter}
-    onMouseLeave={handleLogoutMouseLeave}
-    style={{
-      color: "#e6e6e6",
-      fontWeight: "bold",
-      fontFamily: "Montserrat, sans-serif",
-      border: "1px solid #e6e6e6",
-      borderRadius: "5px",
-      padding: "8px 12px",
-      transition: "all 0.2s ease-in-out",
-      backgroundColor: isLogoutHovered ? "#e6e6e6" : "transparent",
-      color: isLogoutHovered ? "#333" : "#e6e6e6",
-      marginRight: "10px", // Add margin-right for spacing
-    }}
-  >
-    Logout
-  </NavLink>
-</NavItem>
-
-
+                  <NavItem>
+                    <NavLink
+                      tag={ReactLink}
+                      to="/user/help"
+                      onMouseEnter={handleHelpCenterMouseEnter}
+                      onMouseLeave={handleHelpCenterMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isHelpCenterHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isHelpCenterHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      Help Center
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      onClick={logout}
+                      onMouseEnter={handleLogoutMouseEnter}
+                      onMouseLeave={handleLogoutMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isLogoutHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isLogoutHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      Logout
+                    </NavLink>
+                  </NavItem>
 
                   <NavItem>
                     <UncontrolledDropdown nav inNavbar>
@@ -419,7 +427,9 @@ function CustomNavbar() {
                           borderRadius: "5px",
                           padding: "8px 12px",
                           transition: "all 0.2s ease-in-out",
-                          backgroundColor: isUserHovered ? "#e6e6e6" : "transparent",
+                          backgroundColor: isUserHovered
+                            ? "#e6e6e6"
+                            : "transparent",
                           color: isUserHovered ? "#333" : "#e6e6e6",
                           marginRight: "10px", // Add margin-right for spacing
                         }}
@@ -429,8 +439,8 @@ function CustomNavbar() {
 
                       <DropdownMenu right>
                         <DropdownItem
-                         tag={ReactLink}
-                         to={`/user/viewprofile/${user.id}`}
+                          tag={ReactLink}
+                          to={`/user/viewprofile/${user.id}`}
                           style={{
                             color: "#222222",
                             fontWeight: "bold",
@@ -471,7 +481,9 @@ function CustomNavbar() {
                       borderRadius: "5px",
                       padding: "8px 12px",
                       transition: "all 0.2s ease-in-out",
-                      backgroundColor: isLoginHovered ? "#e6e6e6" : "transparent",
+                      backgroundColor: isLoginHovered
+                        ? "#e6e6e6"
+                        : "transparent",
                       color: isLoginHovered ? "#333" : "#e6e6e6",
                       marginRight: "10px", // Add margin-right for spacing
                     }}

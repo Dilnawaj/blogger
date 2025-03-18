@@ -452,9 +452,9 @@ function LinkPostPage() {
                         color="link"
                         onClick={handleGoBack}
                         style={{
-                          color: "purple",
+                          color: "blue",
                           fontSize: "12px",
-                          border: "2px solid purple", // Add a border
+                          border: "2px solid blue", // Add a border
                           padding: "6px 10px", // Add padding for better spacing
                           borderRadius: "3px", // Add rounded corners
                           margin: "3px", // Add margin to separate from other elements

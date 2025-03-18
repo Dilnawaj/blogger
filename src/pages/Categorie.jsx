@@ -52,10 +52,11 @@ function Categorie() {
               })
             ) : (
               <div style={{ textAlign: "center" }}>
-                <h1 style={{ color: "red" }}>
-                  ⚠️ Error: No post in this category
-                </h1>
-              </div>
+              <h1 style={{ color: "#4B4B4B" }}> {/* Dark grey color */}
+                ⚠️  No post in this category !!
+              </h1>
+            </div>
+            
             )}
           </Col>
         </Row>

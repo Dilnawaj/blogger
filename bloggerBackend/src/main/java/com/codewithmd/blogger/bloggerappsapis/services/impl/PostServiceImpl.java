@@ -806,6 +806,8 @@ public class PostServiceImpl implements PostService {
 		if (!plainText.endsWith(".")) {
 			plainText += ".";
 		}
+		plainText = plainText.replaceAll("[\\p{So}]", ""); // Removes symbols like emojis
+
 		// Create a PDF document
 		PDDocument document = new PDDocument();
 
@@ -869,7 +871,7 @@ public class PostServiceImpl implements PostService {
 		contentStream.showText("Author Name: " + postDto.getUser().getName().concat("."));
 		contentStream.newLineAtOffset(0, -15);
 		contentStream.newLineAtOffset(0, -15);
-		contentStream.showText("Post Title: " + postDto.getTitle().concat("."));
+		contentStream.showText("Post Title: " +  postDto.getTitle().concat(".").replaceAll("[\\p{So}]", ""));
 
 		contentStream.newLineAtOffset(0, -15);
 		contentStream.newLineAtOffset(0, -15);
@@ -929,6 +931,7 @@ public class PostServiceImpl implements PostService {
 		json.put("Data", Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()));
 		return json;
 	}
+
 
 	public static String removeHtmlTags(String htmlString) {
 		// Define a regular expression to match HTML tags

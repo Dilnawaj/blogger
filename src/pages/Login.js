@@ -28,6 +28,7 @@ const Login = () => {
     password: "",
   });
   const resetData = () => {
+    
     setLoginDetail({
       email: "",
       password: "",
@@ -91,6 +92,7 @@ console.log(1)
           console.log("error log response", error.response.data.error);
 
           toast.error(error.response.data.error);
+          resetData();
           });
     }
   };
