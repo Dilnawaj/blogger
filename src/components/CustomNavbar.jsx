@@ -26,6 +26,9 @@ import ContextUserProvider from "../context/ContextUserProvider";
 import { toast } from "react-toastify";
 
 function CustomNavbar() {
+  const urlContainsAdmin = window.location.href.includes("admin");
+  console.log(urlContainsAdmin);
+
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [login, setLogin] = useState(false);
@@ -168,53 +171,87 @@ function CustomNavbar() {
   return (
     <div>
       <ContextUserProvider userName={user?.name}>
-        <Navbar
-          style={{ backgroundColor: "rgba(0, 0,  0.5, 0.6)" }}
-          light
-          expand="md"
-        >
-          <NavbarBrand
-            style={{
-              color: "#e6e6e6",
-              fontWeight: "bold",
-              fontFamily: "Montserrat, sans-serif",
-            }}
-          >
-            BloggerHub
-          </NavbarBrand>
-          <NavbarToggler onClick={toggle} />
-          <Collapse isOpen={isOpen} navbar>
-            <Nav className="mr-auto" navbar>
-              <NavItem>
-                <NavLink
-                  tag={ReactLink}
-                  to="/about"
-                  onMouseEnter={handleAboutMouseEnter}
-                  onMouseLeave={handleAboutMouseLeave}
-                  style={{
-                    color: "#e6e6e6",
-                    fontWeight: "bold",
-                    fontFamily: "Montserrat, sans-serif",
-                    border: "1px solid #e6e6e6",
-                    borderRadius: "5px",
-                    padding: "8px 12px",
-                    transition: "all 0.2s ease-in-out",
-                    backgroundColor: isAboutHovered ? "#e6e6e6" : "transparent",
-                    color: isAboutHovered ? "#333" : "#e6e6e6",
-                    marginRight: "10px", // Add margin-right for spacing
-                  }}
-                >
-                  About
-                </NavLink>
-              </NavItem>
-              {login && (
-                <Fragment>
+        {urlContainsAdmin ? (
+          <>
+            <Navbar
+              style={{ backgroundColor: "rgba(0, 0,  0.5, 0.6)" }}
+              light
+              expand="md"
+            >
+              <NavbarBrand
+                style={{
+                  color: "#e6e6e6",
+                  fontWeight: "bold",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+              >
+                BloggerHubs
+              </NavbarBrand>
+              <NavbarToggler onClick={toggle} />
+              <Collapse isOpen={isOpen} navbar>
+                <Nav className="mr-auto" navbar>
+                  <NavItem>
+                  
+                  </NavItem>
+                  {login && (
+                    <Fragment>
+                      <NavItem>
+                        <NavLink
+                          tag={ReactLink}
+                          to="/user/dashboard"
+                          onMouseEnter={handleAddFeedMouseEnter}
+                          onMouseLeave={handleAddFeedMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isAddFeedHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isAddFeedHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          AddFeed
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          tag={ReactLink}
+                          to="/user/Feed?pageNumber=0"
+                          onMouseEnter={handleUserFeedMouseEnter}
+                          onMouseLeave={handleUserFeedMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isUserFeedHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isUserFeedHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          UserFeed
+                        </NavLink>
+                      </NavItem>
+                    </Fragment>
+                  )}
+
                   <NavItem>
                     <NavLink
                       tag={ReactLink}
-                      to="/user/dashboard"
-                      onMouseEnter={handleAddFeedMouseEnter}
-                      onMouseLeave={handleAddFeedMouseLeave}
+                      to="/home/admin?pageNumber=0"
+                      onMouseEnter={handleNewFeedMouseEnter}
+                      onMouseLeave={handleNewFeedMouseLeave}
                       style={{
                         color: "#e6e6e6",
                         fontWeight: "bold",
@@ -223,202 +260,23 @@ function CustomNavbar() {
                         borderRadius: "5px",
                         padding: "8px 12px",
                         transition: "all 0.2s ease-in-out",
-                        backgroundColor: isAddFeedHovered
+                        backgroundColor: isNewFeedHovered
                           ? "#e6e6e6"
                           : "transparent",
-                        color: isAddFeedHovered ? "#333" : "#e6e6e6",
+                        color: isNewFeedHovered ? "#333" : "#e6e6e6",
                         marginRight: "10px", // Add margin-right for spacing
                       }}
                     >
-                      AddFeed
+                       BloggersFeed
                     </NavLink>
                   </NavItem>
-                  <NavItem>
-                    <NavLink
-                      tag={ReactLink}
-                      to="/user/Feed?pageNumber=0"
-                      onMouseEnter={handleUserFeedMouseEnter}
-                      onMouseLeave={handleUserFeedMouseLeave}
-                      style={{
-                        color: "#e6e6e6",
-                        fontWeight: "bold",
-                        fontFamily: "Montserrat, sans-serif",
-                        border: "1px solid #e6e6e6",
-                        borderRadius: "5px",
-                        padding: "8px 12px",
-                        transition: "all 0.2s ease-in-out",
-                        backgroundColor: isUserFeedHovered
-                          ? "#e6e6e6"
-                          : "transparent",
-                        color: isUserFeedHovered ? "#333" : "#e6e6e6",
-                        marginRight: "10px", // Add margin-right for spacing
-                      }}
-                    >
-                      UserFeed
-                    </NavLink>
-                  </NavItem>
-                </Fragment>
-              )}
-
-              <NavItem>
-                <NavLink
-                  tag={ReactLink}
-                  to="/home?pageNumber=0"
-                  onMouseEnter={handleNewFeedMouseEnter}
-                  onMouseLeave={handleNewFeedMouseLeave}
-                  style={{
-                    color: "#e6e6e6",
-                    fontWeight: "bold",
-                    fontFamily: "Montserrat, sans-serif",
-                    border: "1px solid #e6e6e6",
-                    borderRadius: "5px",
-                    padding: "8px 12px",
-                    transition: "all 0.2s ease-in-out",
-                    backgroundColor: isNewFeedHovered
-                      ? "#e6e6e6"
-                      : "transparent",
-                    color: isNewFeedHovered ? "#333" : "#e6e6e6",
-                    marginRight: "10px", // Add margin-right for spacing
-                  }}
-                >
-                  AllFeed
-                </NavLink>
-              </NavItem>
-              {login && (
-                <NavItem>
-                  <NavLink
-                    tag={ReactLink}
-                    to="/user/save"
-                    onMouseEnter={handleSaveFeedMouseEnter}
-                    onMouseLeave={handleSaveFeedMouseLeave}
-                    style={{
-                      color: "#e6e6e6",
-                      fontWeight: "bold",
-                      fontFamily: "Montserrat, sans-serif",
-                      border: "1px solid #e6e6e6",
-                      borderRadius: "5px",
-                      padding: "8px 12px",
-                      transition: "all 0.2s ease-in-out",
-                      backgroundColor: isSaveFeedHovered
-                        ? "#e6e6e6"
-                        : "transparent",
-                      color: isSaveFeedHovered ? "#333" : "#e6e6e6",
-                      marginRight: "10px", // Add margin-right for spacing
-                    }}
-                  >
-                    SaveFeed
-                  </NavLink>
-                </NavItem>
-              )}
-              <NavItem></NavItem>
-
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle
-                  nav
-                  caret
-                  onMouseEnter={handleMoreMouseEnter}
-                  onMouseLeave={handleMoreMouseLeave}
-                  style={{
-                    color: "#e6e6e6",
-                    fontWeight: "bold",
-                    fontFamily: "Montserrat, sans-serif",
-                    border: "1px solid #e6e6e6",
-                    borderRadius: "5px",
-                    padding: "8px 12px",
-                    transition: "all 0.2s ease-in-out",
-                    backgroundColor: isMoreHovered ? "#e6e6e6" : "transparent",
-                    color: isMoreHovered ? "#333" : "#e6e6e6",
-                    marginRight: "10px", // Add margin-right for spacing
-                  }}
-                >
-                  More
-                </DropdownToggle>
-
-                <DropdownMenu right>
-                  <DropdownItem
-                    tag={ReactLink}
-                    to="/services"
-                    style={{
-                      color: "#222222",
-                      fontWeight: "bold",
-                      fontFamily: "Montserrat, sans-serif",
-                    }}
-                  >
-                    Services
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem
-                    tag={ReactLink}
-                    to="/contactus"
-                    style={{
-                      color: "#222222",
-                      fontWeight: "bold",
-                      fontFamily: "Montserrat, sans-serif",
-                    }}
-                  >
-                    Contact Us
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-            <Nav navbar>
-              {login && (
-                <Fragment>
-                  <NavItem>
-                    <NavLink
-                      tag={ReactLink}
-                      to="/user/help"
-                      onMouseEnter={handleHelpCenterMouseEnter}
-                      onMouseLeave={handleHelpCenterMouseLeave}
-                      style={{
-                        color: "#e6e6e6",
-                        fontWeight: "bold",
-                        fontFamily: "Montserrat, sans-serif",
-                        border: "1px solid #e6e6e6",
-                        borderRadius: "5px",
-                        padding: "8px 12px",
-                        transition: "all 0.2s ease-in-out",
-                        backgroundColor: isHelpCenterHovered
-                          ? "#e6e6e6"
-                          : "transparent",
-                        color: isHelpCenterHovered ? "#333" : "#e6e6e6",
-                        marginRight: "10px", // Add margin-right for spacing
-                      }}
-                    >
-                      Help Center
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      onClick={logout}
-                      onMouseEnter={handleLogoutMouseEnter}
-                      onMouseLeave={handleLogoutMouseLeave}
-                      style={{
-                        color: "#e6e6e6",
-                        fontWeight: "bold",
-                        fontFamily: "Montserrat, sans-serif",
-                        border: "1px solid #e6e6e6",
-                        borderRadius: "5px",
-                        padding: "8px 12px",
-                        transition: "all 0.2s ease-in-out",
-                        backgroundColor: isLogoutHovered
-                          ? "#e6e6e6"
-                          : "transparent",
-                        color: isLogoutHovered ? "#333" : "#e6e6e6",
-                        marginRight: "10px", // Add margin-right for spacing
-                      }}
-                    >
-                      Logout
-                    </NavLink>
-                  </NavItem>
-
-                  <NavItem>
-                    <UncontrolledDropdown nav inNavbar>
-                      <DropdownToggle
-                        nav
-                        caret
-                        onMouseEnter={handleUserMouseEnter}
-                        onMouseLeave={handleUserMouseLeave}
+                  {login && (
+                    <NavItem>
+                      <NavLink
+                        tag={ReactLink}
+                        to="/user/save"
+                        onMouseEnter={handleSaveFeedMouseEnter}
+                        onMouseLeave={handleSaveFeedMouseLeave}
                         style={{
                           color: "#e6e6e6",
                           fontWeight: "bold",
@@ -427,74 +285,491 @@ function CustomNavbar() {
                           borderRadius: "5px",
                           padding: "8px 12px",
                           transition: "all 0.2s ease-in-out",
-                          backgroundColor: isUserHovered
+                          backgroundColor: isSaveFeedHovered
                             ? "#e6e6e6"
                             : "transparent",
-                          color: isUserHovered ? "#333" : "#e6e6e6",
+                          color: isSaveFeedHovered ? "#333" : "#e6e6e6",
                           marginRight: "10px", // Add margin-right for spacing
                         }}
                       >
-                        {user.name}
-                      </DropdownToggle>
+                        SaveFeed
+                      </NavLink>
+                    </NavItem>
+                  )}
+                  <NavItem></NavItem>
 
-                      <DropdownMenu right>
-                        <DropdownItem
+               
+                </Nav>
+                <Nav navbar>
+                  {login && (
+                    <Fragment>
+                      <NavItem>
+                        <NavLink
                           tag={ReactLink}
-                          to={`/user/viewprofile/${user.id}`}
+                          to="/user/help"
+                          onMouseEnter={handleHelpCenterMouseEnter}
+                          onMouseLeave={handleHelpCenterMouseLeave}
                           style={{
-                            color: "#222222",
+                            color: "#e6e6e6",
                             fontWeight: "bold",
                             fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isHelpCenterHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isHelpCenterHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
                           }}
                         >
-                          View Profile
-                        </DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem
-                          tag={ReactLink}
-                          to="/user/updatepassword"
+                          Help Center
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          onClick={logout}
+                          onMouseEnter={handleLogoutMouseEnter}
+                          onMouseLeave={handleLogoutMouseLeave}
                           style={{
-                            color: "#222222",
+                            color: "#e6e6e6",
                             fontWeight: "bold",
                             fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isLogoutHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isLogoutHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
                           }}
                         >
-                          Update Passwords
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
+                          Logout
+                        </NavLink>
+                      </NavItem>
+
+                      <NavItem>
+                        <UncontrolledDropdown nav inNavbar>
+                          <DropdownToggle
+                            nav
+                            caret
+                            onMouseEnter={handleUserMouseEnter}
+                            onMouseLeave={handleUserMouseLeave}
+                            style={{
+                              color: "#e6e6e6",
+                              fontWeight: "bold",
+                              fontFamily: "Montserrat, sans-serif",
+                              border: "1px solid #e6e6e6",
+                              borderRadius: "5px",
+                              padding: "8px 12px",
+                              transition: "all 0.2s ease-in-out",
+                              backgroundColor: isUserHovered
+                                ? "#e6e6e6"
+                                : "transparent",
+                              color: isUserHovered ? "#333" : "#e6e6e6",
+                              marginRight: "10px", // Add margin-right for spacing
+                            }}
+                          >
+                            {user.name}
+                          </DropdownToggle>
+
+                          <DropdownMenu right>
+                            <DropdownItem
+                              tag={ReactLink}
+                              to={`/user/viewprofile/${user.id}`}
+                              style={{
+                                color: "#222222",
+                                fontWeight: "bold",
+                                fontFamily: "Montserrat, sans-serif",
+                              }}
+                            >
+                              View Profile
+                            </DropdownItem>
+                            <DropdownItem divider />
+                            <DropdownItem
+                              tag={ReactLink}
+                              to="/user/updatepassword"
+                              style={{
+                                color: "#222222",
+                                fontWeight: "bold",
+                                fontFamily: "Montserrat, sans-serif",
+                              }}
+                            >
+                              Update Passwords
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </NavItem>
+                    </Fragment>
+                  )}
+                  {!login && (
+                    <NavItem>
+                      <NavLink
+                        tag={ReactLink}
+                        to="/login/admin"
+                        onMouseEnter={handleLoginMouseEnter}
+                        onMouseLeave={handleLoginMouseLeave}
+                        style={{
+                          color: "#e6e6e6",
+                          fontWeight: "bold",
+                          fontFamily: "Montserrat, sans-serif",
+                          border: "1px solid #e6e6e6",
+                          borderRadius: "5px",
+                          padding: "8px 12px",
+                          transition: "all 0.2s ease-in-out",
+                          backgroundColor: isLoginHovered
+                            ? "#e6e6e6"
+                            : "transparent",
+                          color: isLoginHovered ? "#333" : "#e6e6e6",
+                          marginRight: "10px", // Add margin-right for spacing
+                        }}
+                      >
+                        Admin Login
+                      </NavLink>
+                    </NavItem>
+                  )}
+                </Nav>
+              </Collapse>
+            </Navbar>
+          </>
+        ) : (
+          <>
+            <Navbar
+              style={{ backgroundColor: "rgba(0, 0,  0.5, 0.6)" }}
+              light
+              expand="md"
+            >
+              <NavbarBrand
+                style={{
+                  color: "#e6e6e6",
+                  fontWeight: "bold",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+              >
+                BloggerHub
+              </NavbarBrand>
+              <NavbarToggler onClick={toggle} />
+              <Collapse isOpen={isOpen} navbar>
+                <Nav className="mr-auto" navbar>
+                  <NavItem>
+                    <NavLink
+                      tag={ReactLink}
+                      to="/about"
+                      onMouseEnter={handleAboutMouseEnter}
+                      onMouseLeave={handleAboutMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isAboutHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isAboutHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      About
+                    </NavLink>
                   </NavItem>
-                </Fragment>
-              )}
-              {!login && (
-                <NavItem>
-                  <NavLink
-                    tag={ReactLink}
-                    to="/login"
-                    onMouseEnter={handleLoginMouseEnter}
-                    onMouseLeave={handleLoginMouseLeave}
-                    style={{
-                      color: "#e6e6e6",
-                      fontWeight: "bold",
-                      fontFamily: "Montserrat, sans-serif",
-                      border: "1px solid #e6e6e6",
-                      borderRadius: "5px",
-                      padding: "8px 12px",
-                      transition: "all 0.2s ease-in-out",
-                      backgroundColor: isLoginHovered
-                        ? "#e6e6e6"
-                        : "transparent",
-                      color: isLoginHovered ? "#333" : "#e6e6e6",
-                      marginRight: "10px", // Add margin-right for spacing
-                    }}
-                  >
-                    Login
-                  </NavLink>
-                </NavItem>
-              )}
-            </Nav>
-          </Collapse>
-        </Navbar>
+                  {login && (
+                    <Fragment>
+                      <NavItem>
+                        <NavLink
+                          tag={ReactLink}
+                          to="/user/dashboard"
+                          onMouseEnter={handleAddFeedMouseEnter}
+                          onMouseLeave={handleAddFeedMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isAddFeedHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isAddFeedHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          AddFeed
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          tag={ReactLink}
+                          to="/user/Feed?pageNumber=0"
+                          onMouseEnter={handleUserFeedMouseEnter}
+                          onMouseLeave={handleUserFeedMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isUserFeedHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isUserFeedHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          UserFeed
+                        </NavLink>
+                      </NavItem>
+                    </Fragment>
+                  )}
+
+                  <NavItem>
+                    <NavLink
+                      tag={ReactLink}
+                      to="/home?pageNumber=0"
+                      onMouseEnter={handleNewFeedMouseEnter}
+                      onMouseLeave={handleNewFeedMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isNewFeedHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isNewFeedHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      AllFeed
+                    </NavLink>
+                  </NavItem>
+                  {login && (
+                    <NavItem>
+                      <NavLink
+                        tag={ReactLink}
+                        to="/user/save"
+                        onMouseEnter={handleSaveFeedMouseEnter}
+                        onMouseLeave={handleSaveFeedMouseLeave}
+                        style={{
+                          color: "#e6e6e6",
+                          fontWeight: "bold",
+                          fontFamily: "Montserrat, sans-serif",
+                          border: "1px solid #e6e6e6",
+                          borderRadius: "5px",
+                          padding: "8px 12px",
+                          transition: "all 0.2s ease-in-out",
+                          backgroundColor: isSaveFeedHovered
+                            ? "#e6e6e6"
+                            : "transparent",
+                          color: isSaveFeedHovered ? "#333" : "#e6e6e6",
+                          marginRight: "10px", // Add margin-right for spacing
+                        }}
+                      >
+                        SaveFeed
+                      </NavLink>
+                    </NavItem>
+                  )}
+                  <NavItem></NavItem>
+
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle
+                      nav
+                      caret
+                      onMouseEnter={handleMoreMouseEnter}
+                      onMouseLeave={handleMoreMouseLeave}
+                      style={{
+                        color: "#e6e6e6",
+                        fontWeight: "bold",
+                        fontFamily: "Montserrat, sans-serif",
+                        border: "1px solid #e6e6e6",
+                        borderRadius: "5px",
+                        padding: "8px 12px",
+                        transition: "all 0.2s ease-in-out",
+                        backgroundColor: isMoreHovered
+                          ? "#e6e6e6"
+                          : "transparent",
+                        color: isMoreHovered ? "#333" : "#e6e6e6",
+                        marginRight: "10px", // Add margin-right for spacing
+                      }}
+                    >
+                      More
+                    </DropdownToggle>
+
+                    <DropdownMenu right>
+                      <DropdownItem
+                        tag={ReactLink}
+                        to="/services"
+                        style={{
+                          color: "#222222",
+                          fontWeight: "bold",
+                          fontFamily: "Montserrat, sans-serif",
+                        }}
+                      >
+                        Services
+                      </DropdownItem>
+                      <DropdownItem divider />
+                      <DropdownItem
+                        tag={ReactLink}
+                        to="/contactus"
+                        style={{
+                          color: "#222222",
+                          fontWeight: "bold",
+                          fontFamily: "Montserrat, sans-serif",
+                        }}
+                      >
+                        Contact Us
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </Nav>
+                <Nav navbar>
+                  {login && (
+                    <Fragment>
+                      <NavItem>
+                        <NavLink
+                          tag={ReactLink}
+                          to="/user/help"
+                          onMouseEnter={handleHelpCenterMouseEnter}
+                          onMouseLeave={handleHelpCenterMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isHelpCenterHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isHelpCenterHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          Help Center
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          onClick={logout}
+                          onMouseEnter={handleLogoutMouseEnter}
+                          onMouseLeave={handleLogoutMouseLeave}
+                          style={{
+                            color: "#e6e6e6",
+                            fontWeight: "bold",
+                            fontFamily: "Montserrat, sans-serif",
+                            border: "1px solid #e6e6e6",
+                            borderRadius: "5px",
+                            padding: "8px 12px",
+                            transition: "all 0.2s ease-in-out",
+                            backgroundColor: isLogoutHovered
+                              ? "#e6e6e6"
+                              : "transparent",
+                            color: isLogoutHovered ? "#333" : "#e6e6e6",
+                            marginRight: "10px", // Add margin-right for spacing
+                          }}
+                        >
+                          Logout
+                        </NavLink>
+                      </NavItem>
+
+                      <NavItem>
+                        <UncontrolledDropdown nav inNavbar>
+                          <DropdownToggle
+                            nav
+                            caret
+                            onMouseEnter={handleUserMouseEnter}
+                            onMouseLeave={handleUserMouseLeave}
+                            style={{
+                              color: "#e6e6e6",
+                              fontWeight: "bold",
+                              fontFamily: "Montserrat, sans-serif",
+                              border: "1px solid #e6e6e6",
+                              borderRadius: "5px",
+                              padding: "8px 12px",
+                              transition: "all 0.2s ease-in-out",
+                              backgroundColor: isUserHovered
+                                ? "#e6e6e6"
+                                : "transparent",
+                              color: isUserHovered ? "#333" : "#e6e6e6",
+                              marginRight: "10px", // Add margin-right for spacing
+                            }}
+                          >
+                            {user.name}
+                          </DropdownToggle>
+
+                          <DropdownMenu right>
+                            <DropdownItem
+                              tag={ReactLink}
+                              to={`/user/viewprofile/${user.id}`}
+                              style={{
+                                color: "#222222",
+                                fontWeight: "bold",
+                                fontFamily: "Montserrat, sans-serif",
+                              }}
+                            >
+                              View Profile
+                            </DropdownItem>
+                            <DropdownItem divider />
+                            <DropdownItem
+                              tag={ReactLink}
+                              to="/user/updatepassword"
+                              style={{
+                                color: "#222222",
+                                fontWeight: "bold",
+                                fontFamily: "Montserrat, sans-serif",
+                              }}
+                            >
+                              Update Passwords
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </NavItem>
+                    </Fragment>
+                  )}
+                  {!login && (
+                    <NavItem>
+                      <NavLink
+                        tag={ReactLink}
+                        to="/login"
+                        onMouseEnter={handleLoginMouseEnter}
+                        onMouseLeave={handleLoginMouseLeave}
+                        style={{
+                          color: "#e6e6e6",
+                          fontWeight: "bold",
+                          fontFamily: "Montserrat, sans-serif",
+                          border: "1px solid #e6e6e6",
+                          borderRadius: "5px",
+                          padding: "8px 12px",
+                          transition: "all 0.2s ease-in-out",
+                          backgroundColor: isLoginHovered
+                            ? "#e6e6e6"
+                            : "transparent",
+                          color: isLoginHovered ? "#333" : "#e6e6e6",
+                          marginRight: "10px", // Add margin-right for spacing
+                        }}
+                      >
+                        Login
+                      </NavLink>
+                    </NavItem>
+                  )}
+                </Nav>
+              </Collapse>
+            </Navbar>
+          </>
+        )}
       </ContextUserProvider>
     </div>
   );

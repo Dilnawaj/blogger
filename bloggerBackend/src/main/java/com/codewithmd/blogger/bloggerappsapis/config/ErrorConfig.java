@@ -7,7 +7,11 @@ public class ErrorConfig {
 		response = response.replace("{Title}", title);
 		return response;
 	}
-
+	public static String customMessage(String title) {
+		String response = "{\"message\":\"{Title}  \"}";
+		response = response.replace("{Title}", title);
+		return response;
+	}
 	public static String updateMessage(String title) {
 		String response = "{\"message\":\"{Title} updated successfully.\"}";
 		response = response.replace("{Title}", title);

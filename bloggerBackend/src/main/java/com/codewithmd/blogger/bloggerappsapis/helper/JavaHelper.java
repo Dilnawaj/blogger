@@ -38,6 +38,7 @@ public class JavaHelper {
 	}
 
 	public static Date dateStringToDate(String dateStr) throws ParseException {
+		System.out.println("date "+ dateStr);
 		boolean flag = isValidFormat(DATE_FORMAT, dateStr);
 		if (flag) {
 			SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
@@ -141,7 +142,15 @@ public class JavaHelper {
 		}
 		return 0;
 	}
-
+	public static int getAdminId() {
+		try {
+			SecureRandom random = SecureRandom.getInstanceStrong();
+			return random.nextInt(900) + 100; // Generates a value between 100 and 999
+		} catch (Exception e) {
+			logger.error("getId", e);
+		}
+		return 0;
+	}
 	public static Integer getWeekOfMonth(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);

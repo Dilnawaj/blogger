@@ -42,21 +42,8 @@ public class AdminDto {
 
 	private String dob;
 
-	private String verificationCode;
-
-	private Integer totalSubscriber = 0;
 
 	private Role role;
-
-	private List<CommentDto> comments = new ArrayList<>();
-
-	private Integer likeCount = 0;
-
-	private Integer dislikeCount = 0;
-
-	private Integer numberOfViews = 0;
-
-	private Integer numberOfPosts = 0;
 
 	public Integer getId() {
 		return id;
@@ -66,36 +53,27 @@ public class AdminDto {
 		this.id = id;
 	}
 
-	public String getName() {
-		if (name == null) {
-			return "";
-		}
+	public @NotEmpty @NotNull @Size(min = 4, message = "Username must be min of 4 characters") String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@NotEmpty @NotNull @Size(min = 4, message = "Username must be min of 4 characters") String name) {
 		this.name = name;
 	}
 
-	public String getEmail() {
-		if (email == null) {
-			return "";
-		}
+	public @Email @NotEmpty @NotNull String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(@Email @NotEmpty @NotNull String email) {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		if (password == null) {
-			return "";
-		}
+	public @NotEmpty @NotNull String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(@NotEmpty @NotNull String password) {
 		this.password = password;
 	}
 
@@ -113,6 +91,14 @@ public class AdminDto {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 
 	public String getPhoneNumber() {
@@ -139,14 +125,6 @@ public class AdminDto {
 		this.gender = gender;
 	}
 
-	public List<CommentDto> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<CommentDto> comments) {
-		this.comments = comments;
-	}
-
 	public String getDob() {
 		return dob;
 	}
@@ -155,83 +133,12 @@ public class AdminDto {
 		this.dob = dob;
 	}
 
-	public String getVerificationCode() {
-		return verificationCode;
-	}
-
-	public void setVerificationCode(String verificationCode) {
-		this.verificationCode = verificationCode;
-	}
-
 	public Role getRole() {
 		return role;
 	}
 
 	public void setRole(Role role) {
 		this.role = role;
-	}
-
-	public String getImageName() {
-		return imageName;
-	}
-
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
-	}
-
-	public Integer getTotalSubscriber() {
-		if (totalSubscriber == null) {
-			return 0;
-		}
-		return totalSubscriber;
-	}
-
-	public Integer getLikeCount() {
-		if (likeCount == null) {
-			return 0;
-		}
-		return likeCount;
-	}
-
-	public void setLikeCount(Integer likeCount) {
-		this.likeCount = likeCount;
-	}
-
-	public Integer getDislikeCount() {
-		if (dislikeCount == null) {
-			return 0;
-		}
-		return dislikeCount;
-	}
-
-	public void setDislikeCount(Integer dislikeCount) {
-		this.dislikeCount = dislikeCount;
-	}
-
-	public void setTotalSubscriber(Integer totalSubscriber) {
-		this.totalSubscriber = totalSubscriber;
-	}
-
-	public Integer getNumberOfViews() {
-		if (numberOfViews == null) {
-			return 0;
-		}
-		return numberOfViews;
-	}
-
-	public void setNumberOfViews(Integer numberOfViews) {
-		this.numberOfViews = numberOfViews;
-	}
-
-	public Integer getNumberOfPosts() {
-		if (numberOfViews == numberOfPosts) {
-			return 0;
-		}
-		return numberOfPosts;
-	}
-
-	public void setNumberOfPosts(Integer numberOfPosts) {
-		this.numberOfPosts = numberOfPosts;
 	}
 
 	public boolean checkValidationForRegister() {

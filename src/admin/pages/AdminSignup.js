@@ -28,6 +28,7 @@ const AdminSignup = () => {
     email: "",
     about: "",
     dob: "",
+    password: "",
   });
   const [error, setError] = useState({
     errors: {},
@@ -42,6 +43,10 @@ const AdminSignup = () => {
     if (!data.name) {
       isValid = false;
       errors.name = "Please enter your name";
+    }
+    if (!data.password) {
+      isValid = false;
+      errors.password = "Please enter your passwordss";
     }
     if (!data.dob) {
       isValid = false;
@@ -68,6 +73,7 @@ const AdminSignup = () => {
       name: "",
       email: "",
       about: "",
+      password: "",
     });
   };
   const handleGoogleFailure = (error) => {
@@ -82,8 +88,8 @@ const AdminSignup = () => {
   const getTodayDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const dd = String(today.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
   };
   const submitForm = (event) => {
@@ -101,17 +107,15 @@ const AdminSignup = () => {
           name: "",
           email: "",
           about: "",
+          password: "",
         });
         console.log("Url", baseUrl);
-        toast.success(
-          "Registration pending, under review by SuperAdmin.",
-          {
-            style: {
-              width: "450px",
-            },
-            autoClose: 12000, // Display the toast for 8 seconds
-          }
-        );
+        toast.success(resp.message, {
+          style: {
+            width: "700px",
+          },
+          autoClose: 14000, // Display the toast for 8 seconds
+        });
 
         navigate("/login/admin");
       })
@@ -152,6 +156,17 @@ const AdminSignup = () => {
       } else {
         delete errors.name; // remove the error message from the errors object
       }
+    } else if (property === "password") {
+      if (!value) {
+        errors.password = "Please enter your password";
+      } else if (
+        !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(value)
+      ) {
+        errors.password =
+          "Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one digit";
+      } else {
+        delete errors.password;
+      }
     } else if (property === "email") {
       if (!value) {
         errors.email = "Please enter your email address";
@@ -160,14 +175,11 @@ const AdminSignup = () => {
       } else {
         delete errors.email; // remove the error message from the errors object
       }
-    }
-    else if (property === "dob") {
+    } else if (property === "dob") {
       if (value) {
-    
         delete errors.dob; // remove the error message from the errors object
-      
+      }
     }
-  }
     // update the error state
     setError({
       isError: Object.keys(errors).length > 0, // set the isError field to true if there are any errors in the errors object
@@ -195,20 +207,16 @@ const AdminSignup = () => {
           about: "",
         });
         console.log("Url", baseUrl);
-        toast.success(
-          "Congratulations! Your sign-up is successful.",
-          {
-            style: {
-              width: "400px",
-            },
-           
-          }
-        );
+        toast.success("Congratulations! Your sign-up is successful.", {
+          style: {
+            width: "400px",
+          },
+        });
 
         navigate("/login");
       })
       .catch((error) => {
-          console.error(error);
+        console.error(error);
         console.log("error log", error.response.data.error);
         if (error.response) {
           // The API returned an error message
@@ -228,7 +236,7 @@ const AdminSignup = () => {
           });
           toast.error("There was a network error. Please try again later.");
         }
-         navigate("/login");
+        navigate("/login");
       });
   };
 
@@ -244,7 +252,7 @@ const AdminSignup = () => {
           backgroundSize: "104% auto", // Increase the left side length
           backgroundPosition: "left center", // Align the image to the left side
           backgroundRepeat: "no-repeat",
-          height: "110vh",
+          height: "115vh",
         }}
       >
         <Container>
@@ -286,6 +294,20 @@ const AdminSignup = () => {
                   )}
                 </FormGroup>
                 <FormGroup>
+                  <Label for="password">Enter Password</Label>
+                  <Input
+                    type="text"
+                    placeholder="Enter Password here"
+                    id="password"
+                    onChange={(e) => handleChange(e, "password")}
+                    value={data.password}
+                    invalid={!!error.errors.password}
+                  />
+                  {error.errors.password && (
+                    <p className="warning-message">{error.errors.password}</p>
+                  )}
+                </FormGroup>
+                <FormGroup>
                   <Label for="dob">Date of Birth:</Label>
                   <Input
                     type="date"
@@ -300,24 +322,10 @@ const AdminSignup = () => {
                     <p className="warning-message">{error.errors.dob}</p>
                   )}
                 </FormGroup>
-                <FormGroup>
-                  <Label for="about">About</Label>
-                  <Input
-                    type="textarea"
-                    placeholder="Enter About here"
-                    id="about"
-                    style={{ height: "100px" }}
-                    onChange={(e) => handleChange(e, "about")}
-                    value={data.about}
-                  />
-                </FormGroup>
+
                 <FormGroup>
                   <Label for="about">Role</Label>
-                  <Input
-                    type="text"
-                    required={false}
-                    value={"Admin"}
-                  />
+                  <Input type="text" required={false} value={"Admin"} />
                 </FormGroup>
                 <Container className="text-center">
                   <div className="d-flex justify-content-center">
@@ -342,7 +350,7 @@ const AdminSignup = () => {
 
                   <div className="row px-3 or_box mt-4 d-flex justify-content-center">
                     <div className="line"></div>
-                    <small style={{ margin: "0 10px" }}>OR</small>
+                    <small style={{ margin: "0 1px" }}>OR</small>
                     <div className="line"></div>
                   </div>
 

@@ -2,6 +2,7 @@ package com.codewithmd.blogger.bloggerappsapis.config;
 
 import com.codewithmd.blogger.bloggerappsapis.account.model.RoleModel;
 import com.codewithmd.blogger.bloggerappsapis.account.model.UserType;
+import com.codewithmd.blogger.bloggerappsapis.admin.services.impl.AdminServiceImpl;
 import com.codewithmd.blogger.bloggerappsapis.entities.User;
 import com.codewithmd.blogger.bloggerappsapis.helper.EncryptionUtils;
 import com.codewithmd.blogger.bloggerappsapis.payloads.GenderEnum;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @Component
 public class MyApplicationRunner implements ApplicationRunner {
 @Autowired
-    private UserServieImpl userServiceImpl;
+    private AdminServiceImpl adminServiceImpl;
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -47,7 +48,7 @@ public class MyApplicationRunner implements ApplicationRunner {
            userModel.setAbout("I am a super Admin & owner of  BloggerHub Website");
            userModel.setDob("1998-12-27");
            userModel.setName("Dilnawaj Khan");
-           userServiceImpl.createUser(userModel);
+           adminServiceImpl.createAdmin(userModel);
        }
     }
 }

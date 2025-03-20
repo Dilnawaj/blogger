@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.codewithmd.blogger.bloggerappsapis.payloads.UserDto;
+import com.codewithmd.blogger.bloggerappsapis.services.impl.UserServieImpl;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,137 +55,35 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private ModelMapper modelMapper;
 	@Autowired
+	private UserServieImpl userServieImpl;
+
+	@Autowired
 	private UserRepo userRepo;
-	
 	@Autowired
 	private BloggerServiceImpl bloggerServiceImpl;
 	
 	@Value("${clientId}")
 	private String clientId;
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Transactional
-	public ResponseModel createAdmin(AdminDto userDto) {
-		try {
-
-			if (userDto.checkValidationForRegister()) {
-
-				Optional<User> userExist = userRepo.findByEmail(userDto.getEmail());
-				if (userExist.isPresent()) {
-					return new ResponseModel("User already exist", HttpStatus.BAD_REQUEST, true);
-				}
-				User user = this.dtoToAdmin(userDto);
-				user.setSuspendUser(false);
-				user.setGoogleAccount(userDto.getAbout().contains("Google"));
-
-				user.setEmail(user.getEmail().toLowerCase().trim());
-				if (JavaHelper.checkStringValue(user.getPassword()).equals("")) {
-					user.setPassword(null);
-				} else {
-					user.setPassword(user.getPassword());
-
-				}
-
-				user.setProfileCreatedDate(JavaHelper.getCurrentDate().toString());
-				user.setLinkExpiryDate(JavaHelper.getCurrentDate().toString());
-				user.setId(idGenerator());
-				user.setVerificationCode(emailService.getFreshVerificationCode());
-				user.setWelcomeEmail(false);
-				user.setPasswordSet(true);
-				if (Boolean.FALSE.equals(emailService.sendEmailForRegisterAdmin(user))) {
-					return new ResponseModel("An unknown error occurred.Please try again later.",
-							HttpStatus.BAD_REQUEST, true);
-				}
-				
-				this.admintoDto(userRepo.save(user));
-				Role role = getByUserType(UserType.ADMIN);
-				if (role != null) {
-					ClientRole newRole = new ClientRole();
-					newRole.setClientId(Long.valueOf(user.getId()));
-					newRole.setRoleId(role.getRoleId());
-					clientRoleService.save(newRole);
-				} else {
-					return new ResponseModel("No role found for " + UserType.NORMAL_USER, HttpStatus.BAD_REQUEST, true);
-				}
-
-				return new ResponseModel(ErrorConfig.addMessage("User"), HttpStatus.OK);
-			}
-			return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
-		} catch (Exception e) {
-			logger.error("createUser ", e);
-			return new ResponseModel(ErrorConfig.unknownError(), HttpStatus.BAD_REQUEST);
-		}
+	public ResponseModel createAdmin(AdminDto adminDto) {
+       UserDto userDto=this.modelMapper.map(adminDto, UserDto.class);
+        userDto.setId(adminIdGenerator());
+		userDto.setUserType(UserType.ADMIN.toString());
+		userDto.setPassword(EncryptionUtils.encrypt(adminDto.getPassword()));
+		userDto.setAbout("I am an Admin");
+		return createAdmin(userDto);
 	}
-	/**
-	 * this method will validate user details and return token
-	 * 
-	 * @param req this will consist login detail of user.
-	 * @see LoginModel
-	 * @return this method will return access-token and refresh-token with validity
-	 *         time second.
-	 */
-	public ResponseModel getLoginModel(LoginModel req, boolean validatePassword) {
 
-		try {
-			if (req.checkValidationForLogin() || !validatePassword) {
-				String email = req.getEmail().toLowerCase().trim();
-				Optional<User> userOptional = userRepo.findByEmail(email);
-				
-				if (userOptional.isEmpty() || req.getEmail().isEmpty()) {
-					return new ResponseModel("User not found ", HttpStatus.BAD_REQUEST, true);
-				} else {
-					User user = userOptional.get();
-					ClientRole clientRole=	clientRoleRepo.findByClientId(user.getId().longValue());
-					
-					if(clientRole.getRoleId()!=2)
-					{
-						return new ResponseModel("Permission denied",
-								HttpStatus.BAD_REQUEST, true);
-					}
-					if (user.isSuspendUser()) {
-						return new ResponseModel("your account has been suspended due to inappropriate behavior",
-								HttpStatus.BAD_REQUEST, true);
-					} else if ((!user.isPasswordSet() && validatePassword)
-							|| (!(JavaHelper.checkPassword(req.getPassword(),
-									EncryptionUtils.decrypt(user.getPassword()), validatePassword)))) {
-						return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
-
-					} else {
-						if (!user.isPasswordSet()) {
-
-							user.setGoogleLoginCount(user.getGoogleLoginCount() + 1);
-							userRepo.save(user);
-						}
-						return bloggerServiceImpl.getLoginModel(user, req.getRememberMe());
-					}
-				}
-			}
-		} catch (Exception e) {
-			return new ResponseModel("Unexpected error occured", HttpStatus.BAD_REQUEST, true);
-		}
-		return new ResponseModel("Required parameter missing.", HttpStatus.BAD_REQUEST, true);
-	}
 
 	public Role getByUserType(UserType userType) {
 
 		return roleRepo.findByUserType(userType.toString());
 	}
-	public AdminDto admintoDto(User user) {
-		return this.modelMapper.map(user, AdminDto.class);
-	}
-		public User dtoToAdmin(AdminDto adminDto) {
-			return this.modelMapper.map(adminDto, User.class);
-		}
-		public Integer idGenerator() {
-			Integer id;
-			while (true) {
-				id = JavaHelper.getId();
 
-				if (userRepo.checkId(id) == 0) {
-					return id;
-				}
-			}
-		}
+
 		@Override
 		public ResponseModel googleSignUp(String code) throws GeneralSecurityException, IOException {
 			if (code != null) {
@@ -209,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
 						adminDto.setEmail(userEmail);
 						adminDto.setName(name);
 						adminDto.setPassword(EncryptionUtils.encrypt(JavaHelper.generateRandomPassword(10, 97, 122)));
-						adminDto.setAbout("Google User");
+						adminDto.setAbout("Google Admin");
 						return createAdmin(adminDto);
 
 					}
@@ -249,11 +149,116 @@ public class AdminServiceImpl implements AdminService {
 			} else {
 				User user =userOptional.get();
 				
-				user.setPassword(EncryptionUtils.encrypt(JavaHelper.generatePassword()));
+				user.setPasswordSet(true);
 			userRepo.save(user);
 			emailService.sendEmailToClientForAdminRole(user);
 			}
 
 			return new ResponseModel("Admin role granted", HttpStatus.OK, false);
 		}
+
+	public Integer adminIdGenerator() {
+		Integer id;
+		while (true) {
+			id = JavaHelper.getAdminId();
+
+			if (userRepo.checkId(id) == 0) {
+				return id;
+			}
+		}
+	}
+
+	@Transactional
+	public ResponseModel createAdmin(UserDto userDto) {
+		try {
+
+			if (userDto.checkValidationForRegister()) {
+
+				Optional<User> userExist = userRepo.findByEmail(userDto.getEmail());
+				if (userExist.isPresent()) {
+					return new ResponseModel("Admin already exist", HttpStatus.BAD_REQUEST, true);
+				}
+				User user = this.dtoToUser(userDto);
+
+				user.setGoogleAccount(userDto.getAbout().contains("Google"));
+
+				user.setEmail(user.getEmail().toLowerCase().trim());
+
+
+					user.setSuspendUser(false);
+					user.setId(userDto.getId());
+					user.setPassword(userDto.getPassword());
+					user.setWelcomeEmail(true);
+					user.setPasswordSet(false);
+				user.setUserType(UserType.ADMIN.toString());
+				user.setLinkExpiryDate(JavaHelper.getCurrentDate().toString());
+
+				user.setProfileCreatedDate(JavaHelper.getCurrentDate().toString());
+
+				this.usertoDto(userRepo.save(user));
+				Role role = getByUserType( UserType.ADMIN );
+
+				ClientRole newRole = new ClientRole();
+				newRole.setClientId(Long.valueOf(user.getId()));
+				newRole.setRoleId(role.getRoleId());
+				clientRoleService.save(newRole);
+				emailService.sendEmailForRegisterAdmin(user);
+
+				return new ResponseModel(ErrorConfig.customMessage("Your admin request has been sent to the super admin. Please wait for up to one day for approval. If your request is approved, you will receive an email confirmation. If the request is not processed within a day, you will need to resubmit your details."), HttpStatus.OK);
+			}
+			return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
+		} catch (Exception e) {
+			logger.error("createAdmin ", e);
+			return new ResponseModel(ErrorConfig.unknownError(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	public ResponseModel getLoginModel(LoginModel req, boolean validatePassword) {
+
+		try {
+			if (req.checkValidationForLogin() || !validatePassword) {
+				String email = req.getEmail().toLowerCase().trim();
+				Optional<User> userOptional = userRepo.findByEmail(email);
+				if (userOptional.isEmpty() || req.getEmail().isEmpty()) {
+					return new ResponseModel("User not found ", HttpStatus.BAD_REQUEST, true);
+				} else {
+					User user = userOptional.get();
+					ClientRole clientRole = clientRoleRepo.findByClientId(user.getId().longValue());
+
+					if (clientRole.getRoleId() != 100) {
+						return new ResponseModel("Permission denied", HttpStatus.BAD_REQUEST, true);
+					}
+					if ((!user.isPasswordSet() && validatePassword)
+							|| (!(JavaHelper.checkPassword(req.getPassword(),
+							EncryptionUtils.decrypt(user.getPassword()), validatePassword)))) {
+						return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
+
+					} else {
+
+						if ( user.getUserType().equals(UserType.ADMIN.toString()) && !user.isPasswordSet()) {
+
+							return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
+						}
+						if (!user.isPasswordSet()) {
+
+							user.setGoogleLoginCount(user.getGoogleLoginCount() + 1);
+							userRepo.save(user);
+						}
+						bloggerServiceImpl.getLoginModel(user, req.getRememberMe());
+					}
+				}
+			}
+		} catch (Exception e) {
+			return new ResponseModel("Unexpected error occured", HttpStatus.BAD_REQUEST, true);
+		}
+		return new ResponseModel("Required parameter missing.", HttpStatus.BAD_REQUEST, true);
+	}
+	public User dtoToUser(UserDto userDto) {
+		return this.modelMapper.map(userDto, User.class);
+	}
+
+	public UserDto usertoDto(User user) {
+		return this.modelMapper.map(user, UserDto.class);
+	}
+
 }

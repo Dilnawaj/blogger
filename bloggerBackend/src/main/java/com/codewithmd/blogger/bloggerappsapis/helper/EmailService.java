@@ -168,19 +168,22 @@ public class EmailService {
 	}
 	@Async
 	public Boolean sendEmailToClientForAdminRole(User user) {
-		
-		String subject = "Password for Admin Role to {clientName}";
-		subject = subject.replace("{clientName}", user.getName());
+		String subject = "Your Admin Account is Now Active";
 
-		String htmlContent = "<html><body><div style=\"max-width: 550px; padding: 18px; border: 1px solid #dadada; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 15px; color: #495057;\"><p style=\"font-size: 17px; font-weight: bold;\">Dear {clientName},</p><p>Your account has been assigned the Admin role. Your password for the Admin role is <strong>{password}</strong> </p><p>If you would like to update your password, please go to the Profile section of your account.</p><p>If you need any assistance, please contact our support team at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color: #3b5de7;\">officialbloggerhub@gmail.com</a>.</p><div style=\"line-height: 30px; color: #303030;\"><p>Regards,<br/><span style=\"font-size: 18px; color: #303030;\">BloggerHub Team</span></p><img src=\"{companyLogo}\" alt=\"Company Logo\" style=\"height: 70px; margin-top: 10px;\"></div></div></body></html>";
-;
-		htmlContent = htmlContent.replace("{password}", user.getPassword());
+		String htmlContent = "<html><body><div style=\"max-width: 550px; padding: 18px; border: 1px solid #dadada; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 15px; color: #495057;\">"
+				+ "<p style=\"font-size: 17px; font-weight: bold;\">Dear {clientName},</p>"
+				+ "<p>Your account is now successfully active. You can use your credentials to log in as an Admin.</p>"
+				+ "<div style=\"line-height: 30px; color: #303030;\">"
+				+ "<p>Thank you,<br/><span style=\"font-size: 18px; color: #303030;\">BloggerHub Team</span></p>"
+				+ "<img src=\"{companyLogo}\" alt=\"Company Logo\" style=\"height: 70px; margin-top: 10px;\">"
+				+ "</div></div></body></html>";
+
 		htmlContent = htmlContent.replace("{clientName}", user.getName());
 		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
 
-		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
-
+		return sendEmail(user.getEmail(), subject, htmlContent, "dilnawaj4044@gmail.com");
 	}
+
 	@Async
 	public Boolean sendEmailForRegisterAdmin(User user) {
 		

@@ -105,15 +105,8 @@ public class UserServieImpl implements UserService {
 
                 user.setEmail(user.getEmail().toLowerCase().trim());
 
+                user.setUserType(UserType.NORMAL_USER.toString());
 
-                if (userDto.getUserType().equalsIgnoreCase("ADMIN")) {
-                    //check it
-                    user.setSuspendUser(false);
-                    user.setId(userDto.getId());
-                    user.setPassword(userDto.getPassword());
-                    user.setWelcomeEmail(true);
-                    user.setPasswordSet(true);
-                } else {
 
                     user.setLinkExpiryDate(JavaHelper.getCurrentDate().toString());
                     user.setSuspendUser(false);
@@ -121,20 +114,21 @@ public class UserServieImpl implements UserService {
                     user.setVerificationCode(emailService.getFreshVerificationCode());
                     user.setId(idGenerator());
                     user.setWelcomeEmail(false);
-                    if (Boolean.FALSE.equals(emailService.sendEmailForRegister(user))) {
+                    if ( !user.isGoogleAccount()  && Boolean.FALSE.equals(emailService.sendEmailForRegister(user))) {
                         return new ResponseModel("An unknown error occurred.Please try again later.",
                                 HttpStatus.BAD_REQUEST, true);
                     }
-                }
+
                 user.setProfileCreatedDate(JavaHelper.getCurrentDate().toString());
 
                 this.usertoDto(userRepo.save(user));
-                Role role = getByUserType(userDto.getUserType().equalsIgnoreCase("ADMIN") ? UserType.ADMIN : UserType.NORMAL_USER);
+                Role role = getByUserType( UserType.NORMAL_USER);
 
                 ClientRole newRole = new ClientRole();
                 newRole.setClientId(Long.valueOf(user.getId()));
                 newRole.setRoleId(role.getRoleId());
                 clientRoleService.save(newRole);
+
                 return new ResponseModel(ErrorConfig.addMessage("User"), HttpStatus.OK);
             }
             return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
@@ -301,7 +295,23 @@ public class UserServieImpl implements UserService {
 
 
             });
+            users = userRepo.getIdsOfUselessAdmins();
+            users.stream().forEach(user -> {
+                Date expiryDate;
+                try {
+                    expiryDate = JavaHelper.dateStringToDate(user.getLinkExpiryDate());
+                    Integer minutes = JavaHelper.getDiffInMinutes(expiryDate, JavaHelper.getCurrentDate());
+                    if (minutes > 1440) {
+                        userRepo.delete(user);
 
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    logger.error("useless admin", e);
+                }
+
+
+            });
 
             List<WelcomeEmailModel> newUsers = userRepo.getIdsOfNewUsers();
 

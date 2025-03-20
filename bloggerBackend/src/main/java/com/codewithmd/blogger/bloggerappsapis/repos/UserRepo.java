@@ -20,8 +20,12 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 	
 	@Query("SELECT new com.codewithmd.blogger.bloggerappsapis.payloads.WelcomeEmailModel(u.email, u.name) FROM User u  WHERE u.welcomeEmail=false and u.isPasswordSet = true and u.password is not null")
 	public List<WelcomeEmailModel> getIdsOfNewUsers();
-	@Query("SELECT u FROM User u  WHERE u.isGoogleAccount = false  and u.isPasswordSet = false ")
+	@Query("SELECT u FROM User u  WHERE u.isGoogleAccount = false  and u.isPasswordSet = false  and u.userType = 'NORMAL_USER' ")
 	public List<User> getIdsOfUselessUsers();
+
+	@Query("SELECT u FROM User u  WHERE  u.isPasswordSet = false  and u.userType = 'ADMIN' ")
+	public List<User> getIdsOfUselessAdmins();
+
 	@Modifying
 	@Transactional
 	@Query(value = "Update User u set u.welcomeEmail = true WHERE u.welcomeEmail = false and  u.isPasswordSet = true")

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.codewithmd.blogger.bloggerappsapis.account.model.RoleModel;
+import com.codewithmd.blogger.bloggerappsapis.account.model.UserType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -116,6 +117,8 @@ public class BloggerServiceImpl implements BloggerService {
 						return new ResponseModel("Invalid credentials", HttpStatus.BAD_REQUEST, true);
 
 					} else {
+
+
 						if (!user.isPasswordSet()) {
 
 							user.setGoogleLoginCount(user.getGoogleLoginCount() + 1);

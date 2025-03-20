@@ -57,6 +57,8 @@ public class User {
 
 	private Integer googleLoginCount = 0;
 
+	private String userType;
+
 	@OneToMany(mappedBy = "user")
 	List<Comment> comments = new ArrayList<>();
 
@@ -254,6 +256,14 @@ public class User {
 
 	public void setGoogleAccount(boolean isGoogleAccount) {
 		this.isGoogleAccount = isGoogleAccount;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 	@Override

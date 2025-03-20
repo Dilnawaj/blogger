@@ -43,6 +43,10 @@ import AdminSignup from "./admin/pages/AdminSignup";
 import AdminForgotPassword from "./admin/pages/AdminForgotPassword";
 import AdminRole from "./admin/pages/AdminRole";
 import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminHome from "./admin/components/AdminHome";
+import PostPageBloggers from "./admin/components/PostPageBloggers";
+import CategorieBlogger from "./admin/components/CategorieBlogger";
+import PostPageByCategoryBlogger from "./admin/components/PostPageByCategoryBlogger";
 function App() {
   return (
     <GlobalStateProvider>
@@ -65,16 +69,27 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/grant/adminrole" element={<AdminRole />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
-
           <Route path="/home" element={<Home />} />
+          <Route path="/home/admin" element={<AdminHome />} />
           <Route
             path="/posts/:postId/pageNumber/:pageNumber/sortBy/:sortBy/keyword/:keyword"
             element={<PostPage />}
           />
+          
+           <Route
+            path="/admin/posts/:postId/pageNumber/:pageNumber/sortBy/:sortBy/keyword/:keyword"
+            element={<PostPageBloggers />}
+          />
+
  
           <Route
             path="/posts/:postId/categorie/:categorieId"
             element={<PostPageByCategory />}
+          />
+          
+          <Route
+            path="/posts/admin/:postId/categorie/:categorieId"
+            element={<PostPageByCategoryBlogger />}
           />
           <Route path="/posts/:postId" element={<LinkPostPage />} />
           <Route
@@ -83,6 +98,7 @@ function App() {
           />
           <Route path="/categories/:categoryId" element={<Categories />} />
           <Route path="/categorie/:categoryId" element={<Categorie />} />
+          <Route path="/admin/categorie/:categoryId" element={<CategorieBlogger />} />
           <Route path="/category/:categoryId" element={<Category />} />
           <Route path="/user" element={<Privateroute />}>
             <Route path="dashboard" element={<UserDashboard />} />

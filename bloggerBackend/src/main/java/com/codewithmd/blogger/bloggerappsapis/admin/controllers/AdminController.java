@@ -43,18 +43,14 @@ public class AdminController {
 
 		return new ResponseEntity<>(response.getResponse(), response.getResponseCode());
 	}
-	
-	@PostMapping(value = "/account/login", produces = "application/json; charset=utf-8", consumes = "application/json")
+
+
+	@PostMapping(value = "/login", produces = "application/json; charset=utf-8", consumes = "application/json")
 	public ResponseEntity<Object> login(@Valid @RequestBody LoginModel loginModel) {
-		ResponseModel responseModel =  this.adminService.getLoginModel(loginModel, true);
+		ResponseModel responseModel = adminService.getLoginModel(loginModel, true);
 		return new ResponseEntity<>(responseModel.getResponse(), responseModel.getResponseCode());
 	}
-	@PostMapping(value = "/account/forgot", produces = "application/json; charset=utf-8", consumes = "application/json")
-	public ResponseEntity<Object> forgotPassword(@RequestBody LoginModel loginModel) {
-		ResponseModel responseModel =this.adminService.forgotPassword(loginModel);
-		return new ResponseEntity<>(responseModel.getResponse(), responseModel.getResponseCode());
-	}
-	
+
 	@GetMapping(value = "/account/permission", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> grantAdminAccess(@RequestParam String email) {
 		ResponseModel adminAccess = this.adminService.grantAdminAccess(email);
