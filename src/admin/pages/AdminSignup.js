@@ -207,13 +207,14 @@ const AdminSignup = () => {
           about: "",
         });
         console.log("Url", baseUrl);
-        toast.success("Congratulations! Your sign-up is successful.", {
+        toast.success(resp.message, {
           style: {
-            width: "400px",
+            width: "700px",
           },
+          autoClose: 14000, // Display the toast for 8 seconds
         });
 
-        navigate("/login");
+        navigate("/login/admin");
       })
       .catch((error) => {
         console.error(error);
