@@ -9,6 +9,7 @@ import {
 } from "../../auth/Index";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import Base from '../../components/Base';
 function AdminDashboard() {
   const navigate = useNavigate();
   
@@ -44,11 +45,29 @@ function AdminDashboard() {
     }
   }, [login]);
   return (
-    <div>
+    
+    <Base>
+    <div
+       style={{
+         display: "flex",
+         justifyContent: "center",
+         alignItems: "center",
+         backgroundImage:
+           'url("http://localhost:5000/post/image/background.png")',
+         backgroundSize: "104% auto", // Increase the left side length
+         backgroundPosition: "left center", // Align the image to the left side
+         backgroundRepeat: "no-repeat",
+         height: "100vh",
+       }}
+     >
+ <div>
       <h1>Admin Dashboard</h1>
       <h2>Welcome to the admin dashboard</h2>
     <Button onClick={logout}> LOGOUT</Button>
     </div>
+      </div>
+      </Base>
+   
   )
 }
 

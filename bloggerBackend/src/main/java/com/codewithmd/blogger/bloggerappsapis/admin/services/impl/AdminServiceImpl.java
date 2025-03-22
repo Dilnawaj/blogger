@@ -123,12 +123,12 @@ public class AdminServiceImpl implements AdminService {
 				User user = userOptional.get();
 				ClientRole clientRole=	clientRoleRepo.findByClientId(user.getId().longValue());
 				
-				if(clientRole.getRoleId()!=2)
+				if(clientRole.getRoleId()!=100)
 				{
 					return new ResponseModel("Permission denied",
 							HttpStatus.BAD_REQUEST, true);
 				}
-				if (Boolean.FALSE.equals(emailService.sendEmailForReset(user))) {
+				if (Boolean.FALSE.equals(emailService.sendEmailForResetForAdmin(user))) {
 					return new ResponseModel("An unknown error occurred.Please try again later.", HttpStatus.BAD_REQUEST,
 							true);
 				}
@@ -156,6 +156,21 @@ public class AdminServiceImpl implements AdminService {
 
 			return new ResponseModel("Admin role granted", HttpStatus.OK, false);
 		}
+
+	@Override
+	public String getEmailFromGoogleAccessToken(String code) throws GeneralSecurityException, IOException {
+	return	bloggerServiceImpl.getEmailFromGoogleAccessToken(code);
+
+	}
+
+	@Override
+	public ResponseModel getLoginModel(String email, boolean b) {
+		LoginModel loginModel = new LoginModel();
+		loginModel.setEmail(email);
+		loginModel.setRememberMe(true);
+		return getLoginModel(loginModel, b);
+
+	}
 
 	public Integer adminIdGenerator() {
 		Integer id;
@@ -244,7 +259,8 @@ public class AdminServiceImpl implements AdminService {
 							user.setGoogleLoginCount(user.getGoogleLoginCount() + 1);
 							userRepo.save(user);
 						}
-						bloggerServiceImpl.getLoginModel(user, req.getRememberMe());
+
+						return bloggerServiceImpl.getLoginModel(user, req.getRememberMe());
 					}
 				}
 			}

@@ -167,7 +167,28 @@ function CustomNavbar() {
       });
     }); // Adjust delay time as needed (in milliseconds)
   };
+  const logoutAdmin = (sessionExpire) => {
+    console.log("Seeesiosn", sessionExpire);
 
+    setTimeout(() => {
+      if (sessionExpire == true) {
+        toast.error(
+          "Session expired, Please do login again to continue using BloggerHub.",
+          {
+            style: {
+              width: "580px",
+            },
+            autoClose: 12000, // Display the toast for 8 seconds
+          }
+        );
+      }
+      doLogout(() => {
+        console.log("LOGOUT Boom");
+        setLogin(false);
+        navigate("/login/admin");
+      });
+    }); // Adjust delay time as needed (in milliseconds)
+  };
   return (
     <div>
       <ContextUserProvider userName={user?.name}>
@@ -329,7 +350,7 @@ function CustomNavbar() {
                       </NavItem>
                       <NavItem>
                         <NavLink
-                          onClick={logout}
+                          onClick={logoutAdmin}
                           onMouseEnter={handleLogoutMouseEnter}
                           onMouseLeave={handleLogoutMouseLeave}
                           style={{

@@ -21,4 +21,7 @@ public interface AdminService {
 
 	ResponseModel grantAdminAccess(String emailAddress);
 
+	String getEmailFromGoogleAccessToken(String code) throws GeneralSecurityException, IOException;
+
+	ResponseModel getLoginModel(String email, boolean b);
 }

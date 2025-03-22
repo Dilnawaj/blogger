@@ -89,7 +89,7 @@ public class CustomRequestInterceptor implements HandlerInterceptor, Filter {
 			String method = request.getMethod();
 		
 
-			if (method.equalsIgnoreCase("OPTIONS") || requestUrl.contains("download-all")||requestUrl.contains("getall/")||requestUrl.contains("categ")||requestUrl.contains("image/")||requestUrl.contains("account/")||requestUrl.contains("background") || requestUrl.contains("webhook/")|| requestUrl.contains("/error")) {
+			if (method.equalsIgnoreCase("OPTIONS") || requestUrl.contains("download-all")||requestUrl.contains("getall/")||requestUrl.contains("categ")||requestUrl.contains("image/")||requestUrl.contains("admin/account/")||requestUrl.contains("account/")||requestUrl.contains("background") || requestUrl.contains("webhook/")|| requestUrl.contains("/error")) {
 				return true;
 			}
 			

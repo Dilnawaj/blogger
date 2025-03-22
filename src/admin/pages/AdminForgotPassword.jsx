@@ -63,7 +63,7 @@ function AdminForgotPassword() {
             "For reset password, \n please check your email address."
           );
 
-          navigate("/login");
+          navigate("/login/admin");
         })
         .catch((error) => {
           if (error.response && error.response.status === 400) {

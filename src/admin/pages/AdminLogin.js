@@ -122,7 +122,7 @@ console.log(1)
         });
 
         setTimeout(() => {
-          navigate("/user/dashboard");
+          navigate("/admin/dashboard");
         });
       })
       .catch((error) => {

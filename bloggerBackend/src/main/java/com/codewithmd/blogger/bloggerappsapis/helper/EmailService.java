@@ -112,7 +112,22 @@ public class EmailService {
 		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
 
 	}
-	
+	@Async
+	public Boolean sendEmailForResetForAdmin(User user) {
+
+		String subject = "Admin Reset Password";
+		String code = getFreshVerificationCode();
+		user.setVerificationCode(code);
+		String htmlContent = "<html><body><div style=\"max-width:550px ; padding : 18px ; border : 1px solid #dadada ; -webkit-border-radius : 10px; -moz-border-radius :10px ; border-radius : 10px; font-family: Arial, Helvetica, sans-serif; font-size : 15px; color:#495057; \"><p style=\"font-size : 17px ; font-weight : bold;\"> Dear {clientName},</p><p style=\"\">We have received your request to reset your password for your Blogger account. Click on the link below to change your password.</p><table style=\"cursor: pointer;\" cellspacing=\"10\" cellpadding=\"0\" border=\"0\"><tbody><tr><td valign=\"middle\" align=\"center\" style=\"border:none; background-color: #dc3545; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; padding-top: 15px; padding-bottom: 15px; padding-right: 20px; padding-left: 20px;\"><a href=\"{link}\" style=\"color: #ffffff; text-decoration: none; font-family: Helvetica, Arial, sans-serif; font-size: 18px; line-height: 135%; font-weight: normal; border:none; display: block;\" target=\"_blank;\">Reset Password</a></td></tr></tbody></table><p> The link would be valid only for the next <strong style=\"color:#575c60;\">{expirytime}</strong> minutes.</p><p>Need any other assistance? Please write to us at <a href=\"mailto:officialbloggerhub@gmail.com\" style=\"color: #3b5de7; cursor: pointer\">officialbloggerhub@gmail.com</a></p><p style=\"line-height: 30px; color: #303030 display: inline-block;\"><div><div><span>Regards,</span><br/><span style=\"font-size: 18px; color: #303030\">BloggerHub Team</span></div><div><img style=\"height: 70px; margin-top: 10px;\" src=\"{companyLogo}\" height=\"70\"></div></div></p></div></body></html>";
+		String link = localhost + "admin/resetpassword?code=" + code;
+		htmlContent = htmlContent.replace("{link}", link);
+		htmlContent = htmlContent.replace("{clientName}", user.getName());
+		htmlContent = htmlContent.replace("{expirytime}", "15");
+		htmlContent = htmlContent.replace("{companyLogo}", "cid:part1.01030607.06070005@gmail.com");
+		return sendEmail(user.getEmail(), subject, htmlContent,"it.1703302@gmail.com");
+
+	}
+
 	@Async
 	public void increaseNoOfViews(Post post) {
 		post.setNumberOfViews(post.getNumberOfViews()+1);

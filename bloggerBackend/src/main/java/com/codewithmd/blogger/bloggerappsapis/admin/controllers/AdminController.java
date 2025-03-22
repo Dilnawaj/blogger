@@ -24,26 +24,31 @@ import com.codewithmd.blogger.bloggerappsapis.exception.ResponseModel;
 
 @RestController
 @CrossOrigin
-@RequestMapping("admin")
+@RequestMapping("admin/account")
 @Validated
 public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
+
 	
-	@PostMapping(value = "/account/signup", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/signup", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> createUser(@RequestBody AdminDto adminDto) {
 		ResponseModel createUser = this.adminService.createAdmin(adminDto);
 		return new ResponseEntity<>(createUser.getResponse(), createUser.getResponseCode());
 	}
-	@GetMapping(value = "/account/googlesignupprocess/{code}", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/googlesignupprocess/{code}", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> googlesignup(@PathVariable String code) throws GeneralSecurityException, IOException {
 
 		ResponseModel response = this.adminService.googleSignUp(code);
 
 		return new ResponseEntity<>(response.getResponse(), response.getResponseCode());
 	}
-
+	@PostMapping(value = "/forgot", produces = "application/json; charset=utf-8", consumes = "application/json")
+	public ResponseEntity<Object> forgotPassword(@RequestBody LoginModel loginModel) {
+		ResponseModel responseModel = adminService.forgotPassword(loginModel);
+		return new ResponseEntity<>(responseModel.getResponse(), responseModel.getResponseCode());
+	}
 
 	@PostMapping(value = "/login", produces = "application/json; charset=utf-8", consumes = "application/json")
 	public ResponseEntity<Object> login(@Valid @RequestBody LoginModel loginModel) {
@@ -51,9 +56,17 @@ public class AdminController {
 		return new ResponseEntity<>(responseModel.getResponse(), responseModel.getResponseCode());
 	}
 
-	@GetMapping(value = "/account/permission", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/permission", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Object> grantAdminAccess(@RequestParam String email) {
 		ResponseModel adminAccess = this.adminService.grantAdminAccess(email);
 		return new ResponseEntity<>(adminAccess.getResponse(), adminAccess.getResponseCode());
+
 	}
+	@GetMapping(value = "/google/login/{code}", produces = "application/json; charset=utf-8")
+	public ResponseEntity<Object> googleLogin(@PathVariable String code) throws GeneralSecurityException, IOException {
+		String email = adminService.getEmailFromGoogleAccessToken(code);
+		ResponseModel responseModel = adminService.getLoginModel(email, false);
+		return new ResponseEntity<>(responseModel.getResponse(), responseModel.getResponseCode());
+	}
+
 }

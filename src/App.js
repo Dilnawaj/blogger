@@ -47,6 +47,7 @@ import AdminHome from "./admin/components/AdminHome";
 import PostPageBloggers from "./admin/components/PostPageBloggers";
 import CategorieBlogger from "./admin/components/CategorieBlogger";
 import PostPageByCategoryBlogger from "./admin/components/PostPageByCategoryBlogger";
+import AdminResetPassword from "./admin/pages/AdminResetPassword";
 function App() {
   return (
     <GlobalStateProvider>
@@ -67,6 +68,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="/admin/resetpassword" element={<AdminResetPassword />} />
           <Route path="/grant/adminrole" element={<AdminRole />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/home" element={<Home />} />
