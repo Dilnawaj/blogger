@@ -33,18 +33,18 @@ Before running this application, ensure you have the following installed:
 | **Role and Permission Service**|Manages user roles and access permissions|
 | **User Service**|Manages user registration, authentication, and profiles|
 
-
-All services communicate via **Kafka topics** to ensure decoupled, scalable architecture.
-
 ---
 
 ## 📧 **Features**
 - Modular microservices design for independent scaling & deployment
-- Real-time vote processing with Kafka
-- Redis cache for faster data retrieval
-- Email notifications to voters and candidates on registration and voting
-- React.js frontend for interactive dashboards
-- Service discovery & fault tolerance (Eureka + Resilience4j)
+- JWT-based secure user authentication and authorization
+- Real-time post interactions: comment, like, share, and subscribe
+- Redis cache integration for faster content retrieval
+- File upload and management with dedicated File Service
+- Role-based access control using Role and Permission Service
+- React.js frontend for responsive and dynamic user experience
+- Email notifications for user actions and updates
+- API documentation integrated using Swagger
 
 ---
 
