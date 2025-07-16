@@ -21,6 +21,32 @@ Before running this application, ensure you have the following installed:
 - HTML
 - CSS
 
+## 📦 **Microservices Modules**
+
+| Module | Purpose |
+|-------|--------:|
+| **API Gateway** |All the request firstly pass through this Gateway|
+| **Candidate Service** | Register and manage candidates |
+| **Voter Service** | Register voters, check eligibility |
+| **Vote Casting Service** | Accept votes, validate voters |
+| **Vote Processor Service** | Process and forward votes |
+| **Result Service** | Aggregate and display election results |
+| **Notification Service** |Sending email to Candidate & Voters |
+
+All services communicate via **Kafka topics** to ensure decoupled, scalable architecture.
+
+---
+
+## 📧 **Features**
+- Modular microservices design for independent scaling & deployment
+- Real-time vote processing with Kafka
+- Redis cache for faster data retrieval
+- Email notifications to voters and candidates on registration and voting
+- React.js frontend for interactive dashboards
+- Service discovery & fault tolerance (Eureka + Resilience4j)
+
+---
+
 ## Running the React App
 
 To run the React app, follow these steps:
