@@ -21,17 +21,18 @@ Before running this application, ensure you have the following installed:
 - HTML
 - CSS
 
-## 📦 **Microservices Modules**
+## 📦 **Blogger Services**
 
 | Module | Purpose |
 |-------|--------:|
-| **API Gateway** |All the request firstly pass through this Gateway|
-| **Candidate Service** | Register and manage candidates |
-| **Voter Service** | Register voters, check eligibility |
-| **Vote Casting Service** | Accept votes, validate voters |
-| **Vote Processor Service** | Process and forward votes |
-| **Result Service** | Aggregate and display election results |
-| **Notification Service** |Sending email to Candidate & Voters |
+| **Blogger Service**|Handles creation and management of blogger profiles|
+| **Category Service**|Manages post categories and organizes blog content|
+| **Comment Service**|Manages user comments on blog posts|
+| **File Service**|Handles file uploads and retrieval (images, docs, etc.)|
+| **Post Service**|Manages blog post creation, updating, and publishing|
+| **Role and Permission Service**|Manages user roles and access permissions|
+| **User Service**|Manages user registration, authentication, and profiles|
+
 
 All services communicate via **Kafka topics** to ensure decoupled, scalable architecture.
 
