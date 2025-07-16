@@ -36,7 +36,6 @@ Before running this application, ensure you have the following installed:
 ---
 
 ## 📧 **Features**
-- Modular microservices design for independent scaling & deployment
 - JWT-based secure user authentication and authorization
 - Real-time post interactions: comment, like, share, and subscribe
 - Redis cache integration for faster content retrieval
