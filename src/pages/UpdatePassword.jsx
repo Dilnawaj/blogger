@@ -115,7 +115,7 @@ const UpdatePassword = () => {
           justifyContent: "center",
           alignItems: "center",
           backgroundImage:
-            'url("http://localhost:5000/post/image/background.png")',
+           `url(${process.env.REACT_APP_API_KEY}/post/image/background.png)`,
           backgroundSize: "104% auto",
           backgroundPosition: "left center",
           backgroundRepeat: "no-repeat",

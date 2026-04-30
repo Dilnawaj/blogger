@@ -14,7 +14,7 @@ const Services = () => {
         className="about-page"
         style={{
           backgroundImage:
-            'url("http://localhost:5000/post/image/background.png")',
+            `url(${process.env.REACT_APP_API_KEY}/post/image/background.png)`,
           backgroundSize: "104% auto", // Increase the left side length
           backgroundPosition: "left center", // Align the image to the left side
           backgroundRepeat: "no-repeat",
