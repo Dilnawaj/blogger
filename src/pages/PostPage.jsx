@@ -679,36 +679,74 @@ console.log(data);
           <Col md={{ size: 9 }}>
             <h3>Comments: ({post ? post.comments?.length : 0})</h3>
 
-            {post &&
-              post?.comments?.map((c, index) => (
-                <Card className="mt-2 border-0" key={index}>
-                  <CardBody>
-                    <CardText>
-                      <span style={{ position: "relative", fontSize: "15px" }}>
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: "-12px",
-                            top: "10",
-                            content: "'\u00a0\u00a0\u00a0\u00a0'",
-                            fontSize: "14px",
-                            color: "black",
-                          }}
-                        >
-                          
-                        </span>
-                      </span>
-                      {c.comment} by  {c.userImage && (
-                        <img
-                          src={`${process.env.REACT_APP_API_KEY}post/image/${c.userImage}`}
-                          alt={c.userName}
-                          style={{ width: "33px", height: "33px", borderRadius: "30%", marginLeft: "10px" }}
-                        />
-                      )} <b>{c.userName}</b>
-                    </CardText>
-                  </CardBody>
-                </Card>
-              ))}
+           {post &&
+  post?.comments?.map((c, index) => (
+    <Card
+      className="mt-3"
+      key={index}
+      style={{
+        border: "none",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        background: "#f9f9f9",
+      }}
+    >
+      <CardBody style={{ padding: "12px 16px" }}>
+        {/* User Info Row */}
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+          {c.userImage ? (
+            <img
+              src={`${process.env.REACT_APP_API_KEY}post/image/${c.userImage}`}
+              alt={c.userName}
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                marginRight: "10px",
+                border: "2px solid #dee2e6",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: "#6c757d",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "10px",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            >
+              {c.userName?.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div>
+            <b style={{ fontSize: "14px", color: "#333" }}>{c.userName}</b>
+            <div style={{ fontSize: "11px", color: "#999" }}>Commenter</div>
+          </div>
+        </div>
+
+        {/* Comment Text */}
+        <p
+          style={{
+            margin: "0",
+            fontSize: "14px",
+            color: "#555",
+            lineHeight: "1.6",
+            paddingLeft: "50px",
+          }}
+        >
+          <i>💬 {c.comment}</i>
+        </p>
+      </CardBody>
+    </Card>
+  ))}
 
             <Card className="mt-4 border-0">
               <CardBody>
