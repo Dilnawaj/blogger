@@ -695,10 +695,16 @@ console.log(data);
                             color: "black",
                           }}
                         >
-                          &rarr;
+                          
                         </span>
                       </span>
-                      {c.comment} by <b>{c.userName}</b>
+                      {c.comment} by  {c.userImage && (
+                        <img
+                          src={`${process.env.REACT_APP_API_KEY}post/image/${c.userImage}`}
+                          alt={c.userName}
+                          style={{ width: "33px", height: "33px", borderRadius: "30%", marginLeft: "10px" }}
+                        />
+                      )} <b>{c.userName}</b>
                     </CardText>
                   </CardBody>
                 </Card>
