@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://13.63.180.151:8081/:path*"
+      "destination": "http://blogger-backend.us-east-1.elasticbeanstalk.com/:path*"
     }
   ]
 }
