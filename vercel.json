@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
+      "source": "/:path*",
       "destination": "http://blogger-backend.us-east-1.elasticbeanstalk.com/:path*"
     }
   ]
