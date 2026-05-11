@@ -10,7 +10,7 @@ const About = () => {
         <div
           className="background-container"
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_API_KEY}/post/image/background.png)`,
+           backgroundImage: `url(${process.env.REACT_APP_S3_URL}/images/background.PNG)`,
             backgroundSize: "104% auto",
             backgroundPosition: "left center",
             backgroundRepeat: "no-repeat",

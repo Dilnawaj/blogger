@@ -2,7 +2,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { doLogout, getToken } from "../auth/Index";
 
-export const BASE_URL = "/api/";
+export const BASE_URL = "/";
 
 export const myAxios = axios.create({
   baseURL: BASE_URL,

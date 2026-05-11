@@ -32,8 +32,7 @@ function AdminRole() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage:
-            `url(${process.env.REACT_APP_API_KEY}/post/image/background.png)`,
+       backgroundImage: `url(${process.env.REACT_APP_S3_URL}/images/background.PNG)`,
           backgroundSize: "104% auto", // Increase the left side length
           backgroundPosition: "left center", // Align the image to the left side
           backgroundRepeat: "no-repeat",
