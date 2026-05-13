@@ -122,17 +122,18 @@ const ProfileInfo = () => {
               <div className="image-container mt-3 container text-center">
                 <div className="image-wrapper">
                   <img
-                    className="img-fluid rounded-circle"
-                    src={
-                      image // Display the selected image if available, otherwise the user's current image
-                        ? URL.createObjectURL(image)
-                        : BASE_URL +
-                          (user.imageName
-                            ? "post/image/" + user.imageName
-                            : "post/image/" + "default.PNG")
-                    }
-                    alt=""
-                  />
+  className="img-fluid rounded-circle"
+  src={
+    image
+      ? URL.createObjectURL(image) // newly selected image preview
+      : user.imageName
+        ? user.imageName.startsWith("http")
+          ? user.imageName // S3 image
+          : BASE_URL + "post/image/" + user.imageName // old local image
+        : BASE_URL + "post/image/profile.png" // default profile image
+  }
+  alt=""
+/>
                   <div className="overlay">
                     <div className="file-input-container">
                       <input
