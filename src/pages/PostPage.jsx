@@ -535,16 +535,17 @@ console.log(data);
                     className="image-container mt-3 container text-center"
                     style={{ maxWidth: "50%" }}
                   >
-                    <img
-                      className="img-fluid"
-                      src={
-                        BASE_URL +
-                        (post.imageName
-                          ? "post/image/" + post.imageName
-                          : "post/image/" + "default.PNG")
-                      }
-                      alt=""
-                    />
+                                     <img
+  className="img-fluid"
+  src={
+    post.imageName
+      ? post.imageName.startsWith("http")
+        ? post.imageName  // S3 URL - use directly
+        : BASE_URL + "post/image/" + post.imageName  // old local image - fallback
+      : BASE_URL + "post/image/default.PNG"  // no image - use default
+  }
+  alt=""
+/>
                   </div>
 
                   <CardText
